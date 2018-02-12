@@ -203,10 +203,10 @@
    {
        /*
        以下是各分区的命名：
-       CARTOON 动画，ANIME 番剧，CREATED_BY_NATIVE 国创，MUSIC   音乐
-       DANCE   舞蹈，GAME  游戏，AUTOTUNE_REMIX    鬼畜，SCIENCE 科学与技术
-       FASHION 时尚，LIFE  生活，ADVERTISEMENT     广告, ENTERTAINMENT 娱乐
-       MOVIES  影视，SCREENING_HALL 放映室
+       cartoon 动画，anime 番剧，createdByNative 国创，music   音乐
+       dance   舞蹈，game  游戏，autotuneRemix   鬼畜，science 科学与技术
+       fashion 时尚，life  生活，advertisement   广告, entertainment 娱乐
+       movies  影视，screeningHall 放映室
        */
        
        /*
