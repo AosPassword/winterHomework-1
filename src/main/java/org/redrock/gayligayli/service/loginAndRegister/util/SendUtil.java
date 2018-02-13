@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.loginAndRegister.util;
+package org.redrock.gayligayli.service.loginAndRegister.util;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;

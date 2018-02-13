@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class SecretUtil {
     private static final String SECRET = "mashiroc";
-
+    private static final String INSTANCE="HmacSHA256";
 
     public static boolean isSecret(String data, String signature) {
         return encoderHs256(data).equals(signature);
@@ -17,8 +17,8 @@ public class SecretUtil {
     public static String encoderHs256(String message) {
         String hash = "";
         try {
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(SECRET.getBytes(), "HmacSHA256");
+            Mac sha256_HMAC = Mac.getInstance(INSTANCE);
+            SecretKeySpec secret_key = new SecretKeySpec(SECRET.getBytes(), INSTANCE);
             sha256_HMAC.init(secret_key);
             byte[] bytes = sha256_HMAC.doFinal(message.getBytes());
             StringBuilder hs = new StringBuilder();

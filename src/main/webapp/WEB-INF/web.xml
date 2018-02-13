@@ -29,7 +29,15 @@
 
     <servlet>
         <servlet-name>HomePageServlet</servlet-name>
-        <servlet-class>org.redrock.gayligayli.video.servlet.HomePageServlet</servlet-class>
+        <servlet-class>org.redrock.gayligayli.controller.servlet.videoInfo.HomePageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>VideoPageServlet</servlet-name>
+        <servlet-class>org.redrock.gayligayli.controller.servlet.videoInfo.VideoPageServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadCodeServlet</servlet-name>
+        <servlet-class>org.redrock.gayligayli.controller.servlet.uploadVideo.UploadCodeServlet</servlet-class>
     </servlet>
 </web-app>
         

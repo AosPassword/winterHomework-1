@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.video.servlet;
+package org.redrock.gayligayli.controller.servlet.videoInfo;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

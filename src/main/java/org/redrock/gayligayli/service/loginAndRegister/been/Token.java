@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.loginAndRegister.been;
+package org.redrock.gayligayli.service.loginAndRegister.been;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -6,6 +6,8 @@ import java.util.*;
 import net.sf.json.JSONObject;
 import org.redrock.gayligayli.Dao.UserDao;
 import org.redrock.gayligayli.util.SecretUtil;
+
+import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
 public class Token {
     /*{
@@ -49,7 +51,7 @@ jti：JWT ID为web token提供唯一标识
     }
 
     public String getNickname() {
-        return this.playloadMap.get("nicename");
+        return this.playloadMap.get(NICKNAME);
     }
 
 
@@ -122,7 +124,7 @@ jti：JWT ID为web token提供唯一标识
 
     public static void main(String[] args) {
         Token token = new Token();
-        token.setSub("user");
+        token.setSub("author");
         token.setTime(10000L);
         System.out.println(token.getToken());
     }

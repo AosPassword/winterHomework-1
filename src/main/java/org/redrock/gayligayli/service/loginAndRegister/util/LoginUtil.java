@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.loginAndRegister.util;
+package org.redrock.gayligayli.service.loginAndRegister.util;
 
 import org.redrock.gayligayli.Dao.UserDao;
 import org.redrock.gayligayli.util.SecretUtil;
