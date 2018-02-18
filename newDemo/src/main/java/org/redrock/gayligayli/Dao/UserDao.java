@@ -215,4 +215,6 @@ public class UserDao {
 
     }
 
+    public static void uploadSuccess(int avId) {
+    }
 }

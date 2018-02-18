@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.service.video.been;
+package org.redrock.gayligayli.service.videoInfo.been;
 
 import lombok.Data;
 import net.sf.json.JSONObject;

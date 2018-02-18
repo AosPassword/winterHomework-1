@@ -99,7 +99,7 @@ public class FinalStringUtil {
     public static final String RANK = "rank";
     public static final String DATA = "data";
 
-    public static final String VIDEO = "video";
+    public static final String VIDEO = "videoInfo";
 
     public static final String BARRAGE = "barrage";
     public static final String COMMENT = "comment";
@@ -108,5 +108,11 @@ public class FinalStringUtil {
 
     public static final String DO_NOT_FIND_VIDEO="doNotFindVideo";
 
+    public static final String ACCESS_KEY = "czxMRl6_nz0WYgjkVEl7t6pAWKLQGgAGhGAeF16x";
+    public static final String SECRET_KEY = "RJ8XGZAibjHodVI97-HzkO89Aj9Cxd2lSGSBOwSg";
+    public static final String BUCKET = "gayligayli";
+
+    public static final String UP_TOKEN = "upToken";
+    public static final String DO_NOT_FIND_USER = "doNotFindUser";
 
 }

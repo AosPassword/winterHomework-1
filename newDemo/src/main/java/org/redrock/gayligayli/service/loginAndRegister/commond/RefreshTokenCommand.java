@@ -1,17 +1,19 @@
 package org.redrock.gayligayli.service.loginAndRegister.commond;
 
 import org.redrock.gayligayli.service.Receiver;
-import org.redrock.gayligayli.service.video.Command;
+import org.redrock.gayligayli.service.Command;
 
 public class RefreshTokenCommand extends Command {
-    private Receiver receiver;
+    private String jwt;
 
-    public RefreshTokenCommand(Receiver receiver) {
+    public RefreshTokenCommand(Receiver receiver, String jwt) {
         this.receiver = receiver;
+        this.jwt = jwt;
     }
 
     @Override
-    public String exectue() {
-        return receiver.RefreshToken();
+    public void exectue() {
+        receiver.RefreshToken(jwt);
     }
+
 }

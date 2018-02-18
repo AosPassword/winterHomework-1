@@ -25,7 +25,7 @@ public class LoginUtil {
     }
 
 
-    //未完成
+    //TODO:防sql注入
     public static boolean hasSomeCharacter(String username) {
         return false;
     }

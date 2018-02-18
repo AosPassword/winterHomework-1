@@ -39,5 +39,9 @@
         <servlet-name>UploadCodeServlet</servlet-name>
         <servlet-class>org.redrock.gayligayli.controller.servlet.uploadVideo.UploadCodeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UploadSuccessServlet</servlet-name>
+        <servlet-class>org.redrock.gayligayli.controller.servlet.uploadVideo.UploadSuccessServlet</servlet-class>
+    </servlet>
 </web-app>
         

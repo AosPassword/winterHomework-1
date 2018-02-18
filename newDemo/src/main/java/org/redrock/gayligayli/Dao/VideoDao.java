@@ -9,12 +9,11 @@ package org.redrock.gayligayli.Dao;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.redrock.gayligayli.service.video.been.Barrage;
-import org.redrock.gayligayli.service.video.been.Comment;
-import org.redrock.gayligayli.service.video.been.Video;
-import org.redrock.gayligayli.service.video.util.VideoInfoUtil;
+import org.redrock.gayligayli.service.videoInfo.been.Barrage;
+import org.redrock.gayligayli.service.videoInfo.been.Comment;
+import org.redrock.gayligayli.service.videoInfo.been.Video;
+import org.redrock.gayligayli.service.videoInfo.util.VideoInfoUtil;
 
-import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.*;
 
@@ -125,7 +124,7 @@ public class VideoDao {
      * @return 视频
      */
     public static Video getAllTypeRandomVideo() {
-        String sql = "SELECT * FROM video WHERE type = ? AND success = 'y' ORDER BY rand() LIMIT 1";
+        String sql = "SELECT * FROM videoInfo WHERE type = ? AND success = 'y' ORDER BY rand() LIMIT 1";
         return getRandomVideo(sql);
     }
 
@@ -136,7 +135,7 @@ public class VideoDao {
      * @return 视频
      */
     public static Video getOneTypeRandomVideo(String type) {
-        String sql = "SELECT * FROM video WHERE type = ? AND success = 'y' ORDER BY rand() LIMIT 1";
+        String sql = "SELECT * FROM videoInfo WHERE type = ? AND success = 'y' ORDER BY rand() LIMIT 1";
         return getRandomVideo(sql);
     }
 

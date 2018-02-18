@@ -1,16 +1,14 @@
-package org.redrock.gayligayli.service.video.util;
+package org.redrock.gayligayli.service.videoInfo.util;
 
 import org.redrock.gayligayli.Dao.VideoDao;
-
-import java.util.ArrayList;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
 public class VideoInfoUtil {
     //http://p3qhkqnrm.bkt.clouddn.com/image/png/initAvatar.png
     private static String url = "http://p3qhkqnrm.bkt.clouddn.com/";
-    private static String photoBucket ="image/video/photo/";
-    private static String videoBucket = "video/";
+    private static String photoBucket ="image/videoInfo/photo/";
+    private static String videoBucket = "videoInfo/";
     public static boolean isVideoExist(int id){
         return VideoDao.getVideoInfo(id) != null;
     }

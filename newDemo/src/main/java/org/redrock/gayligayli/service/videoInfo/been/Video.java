@@ -1,4 +1,4 @@
-package org.redrock.gayligayli.service.video.been;
+package org.redrock.gayligayli.service.videoInfo.been;
 
 import lombok.Data;
 import net.sf.json.JSONObject;
@@ -54,7 +54,7 @@ public class Video {
     }
 
     public String toRankString(){
-        //video.views+video.coin*70
+        //videoInfo.views+videoInfo.coin*70
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(ID,id);
         jsonObject.put(NAME,name);

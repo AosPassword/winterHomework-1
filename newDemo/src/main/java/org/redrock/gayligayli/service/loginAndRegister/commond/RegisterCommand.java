@@ -1,16 +1,17 @@
 package org.redrock.gayligayli.service.loginAndRegister.commond;
 
 import org.redrock.gayligayli.service.Receiver;
-import org.redrock.gayligayli.service.video.Command;
+import org.redrock.gayligayli.service.Command;
 
 public class RegisterCommand extends Command {
-    private Receiver receiver;
 
-    public RegisterCommand(Receiver receiver){
-        this.receiver=receiver;
+    public RegisterCommand(Receiver receiver) {
+        this.receiver = receiver;
     }
+
     @Override
-    public String exectue() {
-        return receiver.Register();
+    public void exectue() {
+        receiver.Register();
     }
+
 }

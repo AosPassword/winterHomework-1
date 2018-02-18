@@ -16,6 +16,6 @@ public class VideoListInfoServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-
+//TODO 我也不知道这是干啥的servlet
     }
 }
