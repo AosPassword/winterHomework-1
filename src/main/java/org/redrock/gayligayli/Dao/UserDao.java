@@ -34,7 +34,7 @@ public class UserDao {
     public static Map<String, String> getUserInfo(String username, String usernameType) {
 
         Map<String, String> info = null;
-        String sql = "SELECT nickname,bigVip,coin,Bcoin,experience,level FROM user WHERE " + usernameType + " = ?";
+        String sql = "SELECT nickname,big_vip,coin,b_coin,experience,level FROM user WHERE " + usernameType + " = ?";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -74,26 +74,24 @@ public class UserDao {
      * @param usernameType 用户名的类型
      * @return 用户的id
      */
-    public static int getUserid(String username, String usernameType) {
+public static int getUserid(String usernameType, String username) {
 
         int id = -1;
-        String sql = "SELECT id FROM user WHERE ? = ?";
+        String sql = "SELECT id FROM user WHERE " + usernameType + " = ?";
+        System.out.println(sql);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-
+        System.out.println(usernameType + "  " + username);
         try {
-
             connection = JdbcUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, usernameType);
-            preparedStatement.setString(2,username);
+            preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 id = resultSet.getInt(ID);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("getUserId抛错误！");
@@ -134,7 +132,7 @@ public class UserDao {
             e.printStackTrace();
             System.out.println("getUserNickname抛错误！");
         } finally {
-            JdbcUtil.close(connection,preparedStatement,resultSet);
+            JdbcUtil.close(connection, preparedStatement, resultSet);
         }
 
         return nickname;
@@ -160,6 +158,7 @@ public class UserDao {
 
             connection = JdbcUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -170,7 +169,7 @@ public class UserDao {
             e.printStackTrace();
             System.out.println("getUserPass抛错误！");
         } finally {
-            JdbcUtil.close(connection,preparedStatement,resultSet);
+            JdbcUtil.close(connection, preparedStatement, resultSet);
         }
 
         return password;
@@ -210,9 +209,22 @@ public class UserDao {
             e.printStackTrace();
             System.out.println("insertNewUser抛错误！");
         } finally {
-            JdbcUtil.close(connection,preparedStatement);
+            JdbcUtil.close(connection, preparedStatement);
         }
 
     }
 
+    public static void uploadSuccess(int avId) {
+        String sql = "UPLOAD user SET success = 'y' WHERE avId = ?";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, String.valueOf(avId));
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -10,7 +10,7 @@ public class LoginUtil {
 
     public static boolean isPass(String usernameType, String username, String password) {
 
-        if (UserDao.getUserid(username, usernameType) != -1) {
+        if (UserDao.getUserid(usernameType, username) != -1) {
             String passwordSecret = UserDao.getUserPass(username, usernameType);
             password = SecretUtil.encoderHs256(password);
             if (password.equals(passwordSecret)) {
@@ -25,13 +25,13 @@ public class LoginUtil {
     }
 
 
-    //未完成
+    //TODO:防sql注入
     public static boolean hasSomeCharacter(String username) {
         return false;
     }
 
     public static boolean hasUser(String usernameType, String username) {
-        return UserDao.getUserid(username, usernameType) != -1;
+        return UserDao.getUserid(usernameType, username) != -1;
     }
 
 

@@ -8,10 +8,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class JdbcUtil {
+    //TODO:数据库连接
     private static BasicDataSource basicDataSource;
 
     public static BasicDataSource getBasicDataSource(){
         return basicDataSource;
+    }
+
+    public static void initDatabase(BasicDataSource dataSource){
+        basicDataSource=dataSource;
     }
 
     public static Connection getConnection() throws SQLException {

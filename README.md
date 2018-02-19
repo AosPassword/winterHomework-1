@@ -46,7 +46,7 @@
 
    - 登陆
 
-        请求为一个JSON串，使用post请求
+        请求为一个JSON串，使用post请求 http://www.mashiroc.cn/gayligayliapi/login
 
         ```json
         {
@@ -93,7 +93,7 @@
 
         ​
 
-   - 刷新token
+   - 刷新token http://www.mashiroc.cn/gayligayliapi/refreshToken
 
         请求为一个JSON串，使用post请求
 
@@ -119,7 +119,7 @@
 
    1.2 注册
 
-   - 检查用户名是否存在
+   - 检查用户名是否存在 http://www.mashiroc.cn/gayligayliapi/isUserHas
 
       请求为一个get请求，需要两个参数
 
@@ -136,13 +136,14 @@
          此处的result与其他不同，只有两种
          "userExist":该用户名已存在
          "canRegister":该用户名可使用
+         */
          "result":<result>
      }
      ```
 
      ​
 
-   - 注册     用户名 user 密码 pass      token
+   - 注册 http://www.mashiroc.cn/gayligayliapi/register
 
      请求为一个JSON串，使用post请求
 
@@ -168,7 +169,7 @@
 
      ​
 
-   - 发送验证码 手机号telephone        code{1-成功 0-失败}   yanzhengma{sdljfds（sha-256）}
+   - 发送验证码 http://www.mashiroc.cn/gayligayliapi/verificationCode
 
      请求为一个JSON串，使用post请求
 
@@ -193,7 +194,7 @@
 
 2. 视频相关
 
-   2.1 拉取主页信息
+   2.1 拉取主页信息 http://www.mashiroc.cn/gayligayliapi/homePage
 
    请求为get请求
 
@@ -209,44 +210,14 @@
        movies  影视，screeningHall 放映室
        */
        
-       /*
-       作者的信息那里是我刚改的 还没做好 等一下
-       以下是视频中可能会出现的元素的命名：
-       id   不解释   name  名字       user   作者的信息   type 分区
-       avId 视频号   time  上传时间   length 长度         description 视频详细描述
-       coin 硬币数   views 播放数     collection 收藏数   barrageNum 弹幕数
-       photoUrl 封面url   videoUrl 视频url    childType 子分区
-       
-       //各个分区的新视频数量
-       "typeNum":{  ...
-           		"cartoon":xxx
-                 	 ...},
-       
-       //轮播那一条的 <carousel>为一个视频信息的jsonarray 每个元素存放视频信息
-       "carousel":<carousel>,
-       
-       //推广那一条
-       "spread":<spread>,
-       
-       //直播那一条 不是从数据库取得 做样子的直播
-       "live":<live>,
-       
-       //下面是各分区的信息 每个分区里面有info和rank两个jsonarray 
-       //分别为左边的是个视频信息和右边的排名
-       ...
-       "music":{
-       		"info":<info>
-       		"rank":<rank>
-   			}
-   	...
-   }
+       aut   hor                                                                                  author 
    ```
 
    ​
 
    2.2 拉取视频详细信息，视频弹幕信息，视频评论信息
 
-   - 拉取
+   - 拉取  http://www.mashiroc.cn/gayligayliapi/videoPage
 
      请求为一个JSON串 post请求
 
@@ -274,6 +245,36 @@
      ```
 
    2.3 上传视频
+
+   - 获得上传凭证  http://www.mashiroc.cn/gayligayliapi/videoPage
+
+     请求为一个JSON串 post请求
+
+     ```json
+     {
+         "name":<name>,//视频的名字
+       	"nickname":<nickname>,//up主的名字
+       	"type":<type>,//视频的分区 上见分区命名
+       	"description":<description>,//视频的详细描述
+       	"length":<length>,//视频的长度
+       	"timestamp":<timestamp>,//这个时间戳会成为视频上传时间
+       	"signature":<signature>
+     }
+     ```
+
+   - 视频上传成功通知  http://www.mashiroc.cn/gayligayliapi/uploadSuccess
+
+     在没有回调的情况下使用这个
+
+     请求为一个JSON串
+
+     ```json
+     {
+         "avId":<avId>,
+       	"timestamp":<timestamp>,
+       	"signature":<signature>
+     }
+     ```
 
    2.4 上传视频信息
 

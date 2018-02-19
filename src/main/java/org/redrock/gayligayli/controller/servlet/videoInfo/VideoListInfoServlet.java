@@ -1,10 +1,12 @@
 package org.redrock.gayligayli.controller.servlet.videoInfo;
 
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
+@WebServlet(name = "test",urlPatterns = "/test")
 public class VideoListInfoServlet extends HttpServlet {
 
     @Override
@@ -16,6 +18,6 @@ public class VideoListInfoServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-
+//TODO 我也不知道这是干啥的servlet
     }
 }
