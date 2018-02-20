@@ -1,28 +1,25 @@
 package org.redrock;
 
 import net.sf.json.JSONObject;
+import org.redrock.gayligayli.util.SecretUtil;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(USERNAME_TYPE,"telephone");
-        jsonObject.put(USERNAME,"17347898530");
-        jsonObject.put(PASSWORD,"zxc981201");
-        jsonObject.put(TIMESTAMP,"1519047332");
-        jsonObject.put(SIGNATURE,"de095794f2a00a74c10c5ebd74172ae64970747cee65057b6a85f2426d006241");
+        jsonObject.put(TELEPHONE,"17347898530");
+        long time = (long) Math.ceil(new Date().getTime()/1000);
+        jsonObject.put(TIMESTAMP,time);
+        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256("17347898530."+String.valueOf(time)));
         System.out.println(jsonObject.toString());
-        String result = sendPost("http://localhost:8080/login",jsonObject.toString());
+        String result = sendPost("http://localhost:8080/verificationCode",jsonObject.toString());
         System.out.println(result);
     }
 

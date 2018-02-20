@@ -57,8 +57,9 @@ public class Receiver {
                     };
                     sb.append(requestJson.getString(key)).append(SIGNATURE_SEPARATOR);
                 }
-                System.out.println(sb.toString());
+                System.out.println("json  "+sb.toString());
                 if (SecretUtil.isSecret(sb.toString(), signature)) {
+                    System.out.println("secretYes");
                     if (TimeUtil.isNotOverTime(requestJson.getString(TIMESTAMP), REQUEST_OVERTIME_SECOND)) {
                         return true;
                     } else {

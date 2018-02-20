@@ -31,15 +31,23 @@ public class SendUtil {
         request.setSignName(SIGN_NAME);
         request.setTemplateCode(TEMPLATE_CODE);
         JSONObject jsonObject = new JSONObject();
-        String code = String.valueOf(Math.ceil(Math.random() * 1000));
+        int code = getCode();
         jsonObject.element("code", code);
         request.setTemplateParam(jsonObject.toString());
         SendSmsResponse response = acsClient.getAcsResponse(request);
         if (response.getCode() != null && "OK".equals(response.getCode())) {
-            return code;
+            return String.valueOf(code);
         }
+        System.out.println(response.getCode());
         return null;
 
     }
 
+    private static int getCode() {
+        int code = 0;
+        while (code < 1000||code>=10000) {
+            code = (int) Math.ceil(Math.random() * 10000);
+        }
+        return code;
+    }
 }
