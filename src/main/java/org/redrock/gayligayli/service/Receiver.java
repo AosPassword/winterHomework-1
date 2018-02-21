@@ -2,9 +2,7 @@ package org.redrock.gayligayli.service;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.qiniu.util.Auth;
-import com.sun.org.apache.regexp.internal.RE;
 import lombok.Data;
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.redrock.gayligayli.Dao.UserDao;
@@ -32,10 +30,17 @@ public class Receiver {
     private JSONObject requestJson;
     private int flag;
     private JSONObject responseJson;
+    private Token token;
 
 
     public Receiver(String jsonStr) {
         this.requestJson = JSONObject.fromObject(jsonStr);
+        responseJson = new JSONObject();
+    }
+
+    public Receiver(String jsonStr, Token token) {
+        this.token = token;
+        this.responseJson = JSONObject.fromObject(jsonStr);
         responseJson = new JSONObject();
     }
 
@@ -54,10 +59,10 @@ public class Receiver {
                     if (SIGNATURE.equals(key)) {
                         sb.delete(sb.length() - 1, sb.length());
                         break;
-                    };
+                    }
                     sb.append(requestJson.getString(key)).append(SIGNATURE_SEPARATOR);
                 }
-                System.out.println("json  "+sb.toString());
+                System.out.println("json  " + sb.toString());
                 if (SecretUtil.isSecret(sb.toString(), signature)) {
                     System.out.println("secretYes");
                     if (TimeUtil.isNotOverTime(requestJson.getString(TIMESTAMP), REQUEST_OVERTIME_SECOND)) {
@@ -75,7 +80,8 @@ public class Receiver {
     }
 
     private void errorString() {
-        if (flag == -1) {
+        System.out.println(flag);
+        if (flag == 0) {
             responseJson.put(RESULT, SIGNATURE_ERROR);
         } else {
             responseJson.put(RESULT, REQUEST_OVERTIME);
@@ -326,6 +332,138 @@ public class Receiver {
             } else {
                 responseJson.put(RESULT, DO_NOT_FIND_VIDEO);
             }
+            errorString();
+        }
+    }
+
+    public void SendCoin() {
+        if (isSignatureTrue()) {
+            if (token.isToken()) {
+                if (token.isNotTokenOverTime()) {
+                    int sendCoin = requestJson.getInt(SEND_COIN);
+                    int videoId = requestJson.getInt(VIDEO_ID);
+                    String nickname = token.getNickname();
+                    if (LoginUtil.hasUser(NICKNAME, nickname)) {
+                        int userId = UserDao.getUserid(NICKNAME, nickname);
+                        if (VideoDao.getVideoId(ID, String.valueOf(videoId)) != -1) {
+                            if (UserDao.getCoin(userId) <= sendCoin) {
+                                UserDao.reduceCoin(sendCoin, userId);
+                                VideoDao.addCoin(sendCoin, videoId);
+                                responseJson.put(RESULT, SUCCESS);
+                            } else {
+                                responseJson.put(RESULT, NOT_ENOUGH_COIN);
+                            }
+                        } else {
+                            responseJson.put(RESULT, DO_NOT_FIND_VIDEO);
+                        }
+                    } else {
+                        responseJson.put(RESULT, DO_NOT_FIND_USER);
+                    }
+                } else {
+                    responseJson.put(RESULT, TOKEN_OVERTIME);
+                }
+            } else {
+                responseJson.put(RESULT, TOKEN_ERROR);
+            }
+        } else {
+            errorString();
+        }
+    }
+
+    public void addCollection() {
+        if (isSignatureTrue()) {
+            if (token.isToken()) {
+                if (token.isNotTokenOverTime()) {
+                    int videoId = requestJson.getInt(VIDEO_ID);
+                    String nickname = token.getNickname();
+                    if (LoginUtil.hasUser(NICKNAME, nickname)) {
+                        int userId = UserDao.getUserid(NICKNAME, nickname);
+                        if (VideoDao.getVideoId(ID, String.valueOf(videoId)) != -1) {
+                            UserDao.addCollection(userId, videoId);
+                            responseJson.put(RESULT, SUCCESS);
+                        } else {
+                            responseJson.put(RESULT, DO_NOT_FIND_VIDEO);
+                        }
+                    } else {
+                        responseJson.put(RESULT, DO_NOT_FIND_USER);
+                    }
+                } else {
+                    responseJson.put(RESULT, TOKEN_OVERTIME);
+                }
+            } else {
+                responseJson.put(RESULT, TOKEN_ERROR);
+            }
+        } else {
+            errorString();
+        }
+    }
+
+    public void sendBarrage() {
+        if (isSignatureTrue()) {
+            if (token.isToken()) {
+                if (token.isNotTokenOverTime()) {
+                    int videoId = requestJson.getInt(VIDEO_ID);
+                    String content = requestJson.getString(CONTENT);
+                    String appearTime = requestJson.getString(APPEAR_TIME);
+                    String sendTime = requestJson.getString(TIMESTAMP);
+                    String color = requestJson.getString(COLOR);
+                    int fontsize = requestJson.getInt(FONTSIZE);
+                    int position = requestJson.getInt(POSITION);
+                    String nickname = token.getNickname();
+                    if (LoginUtil.hasUser(NICKNAME, nickname)) {
+                        int userId = UserDao.getUserid(NICKNAME, nickname);
+                        if (VideoDao.getVideoId(ID, String.valueOf(videoId)) != -1) {
+                            VideoDao.addBarrage(videoId, userId, content, appearTime, sendTime, color, fontsize, position);
+                            responseJson.put(RESULT, SUCCESS);
+                        } else {
+                            responseJson.put(RESULT, DO_NOT_FIND_VIDEO);
+                        }
+                    } else {
+                        responseJson.put(RESULT, DO_NOT_FIND_USER);
+                    }
+                } else {
+                    responseJson.put(RESULT, TOKEN_OVERTIME);
+                }
+            } else {
+                responseJson.put(RESULT, TOKEN_ERROR);
+            }
+        } else {
+            errorString();
+        }
+    }
+
+    public void sendComment() {
+        if (isSignatureTrue()) {
+            if (token.isToken()) {
+                if (token.isNotTokenOverTime()) {
+                    int videoId = requestJson.getInt(VIDEO_ID);
+                    int pid = requestJson.getInt(COMMENT_PID);
+                    String content = requestJson.getString(CONTENT);
+                    String device = requestJson.getString(DEVICE);
+                    String time = requestJson.getString(TIMESTAMP);
+                    String nickname = token.getNickname();
+                    if (LoginUtil.hasUser(NICKNAME, nickname)) {
+                        int userId = UserDao.getUserid(NICKNAME, nickname);
+                        if (VideoDao.getVideoId(ID, String.valueOf(videoId)) != -1) {
+                            if (VideoDao.pidExist(pid)) {
+                                VideoDao.addComment(videoId, pid, userId, content, time, device);
+                                responseJson.put(RESULT, SUCCESS);
+                            } else {
+                                responseJson.put(RESULT, DO_NOT_FIND_COMMENT);
+                            }
+                        } else {
+                            responseJson.put(RESULT, DO_NOT_FIND_VIDEO);
+                        }
+                    } else {
+                        responseJson.put(RESULT, DO_NOT_FIND_USER);
+                    }
+                } else {
+                    responseJson.put(RESULT, TOKEN_OVERTIME);
+                }
+            } else {
+                responseJson.put(RESULT, TOKEN_ERROR);
+            }
+        } else {
             errorString();
         }
     }

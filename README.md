@@ -1,6 +1,6 @@
-﻿# 寒假作业企划【雾】
+# 寒假作业企划【雾】
 
-###要实现的功能
+### 要实现的功能
 
 #### 加分项
 
@@ -36,7 +36,7 @@
 
 8. [选做]浏览历史, 收藏功能
 
-------------------------
+------
 
 ### 接口概述
 
@@ -46,82 +46,82 @@
 
    - 登陆
 
-        请求为一个JSON串，使用post请求 http://www.mashiroc.cn/gayligayliapi/login
+     请求为一个JSON串，使用post请求 <http://www.mashiroc.cn/gayligayliapi/login>
 
-        ```json
-        {
-            //用户名的类型，如telephone，username，nickname，下同
-            "usernameType":<usernameType>,
-            
-            //用户名，下同
-         	"username":<username>,
-            
-            //密码，不需要加密，下同
-         	"password":<password>,
-            
-            //UNIX时间戳，下同
-         	"timestamp":<timestamp>,
-         	
-            /*
-            签名，需要按照顺序使用"."拼接value，
-            然后使用HmacSHA-256加密，如本请求的签名为：
-            <usernameType>.<username>.<password>.<timestamp>
-            */
-            "signature":<signature>
-        }
-        ```
+     ```json
+     {
+         //用户名的类型，如telephone，username，nickname，下同
+         "usernameType":<usernameType>,
+         
+         //用户名，下同
+      	"username":<username>,
+         
+         //密码，不需要加密，下同
+      	"password":<password>,
+         
+         //UNIX时间戳，下同
+      	"timestamp":<timestamp>,
+      	
+         /*
+         签名，需要按照顺序使用"."拼接value，
+         然后使用HmacSHA-256加密，如本请求的签名为：
+         <usernameType>.<username>.<password>.<timestamp>
+         */
+         "signature":<signature>
+     }
+     ```
 
-        响应为一个JSON串
+     响应为一个JSON串
 
-        ```json
-        {
-            /*
-            result有如下几种：
-            "success":成功，会附带其他数据，若不成功，则返回的JSON只有错误原因
-            "passwordError":密码错误
-            "requestError":请求错误
-            "requestOvertime":请求超时，时限为十分钟
-            "signatureError":请求的签名验证错误
-            "tokenOvertime":token已过期
-            */
-            "result":<result>,
-            
-            //token
-         	"jwt":<jwt>
-        }
-        ```
+     ```json
+     {
+         /*
+         result有如下几种：
+         "success":成功，会附带其他数据，若不成功，则返回的JSON只有错误原因
+         "passwordError":密码错误
+         "requestError":请求错误
+         "requestOvertime":请求超时，时限为十分钟
+         "signatureError":请求的签名验证错误
+         "tokenOvertime":token已过期
+         */
+         "result":<result>,
+         
+         //token
+      	"jwt":<jwt>
+     }
+     ```
 
-        ​
+     ​
 
-   - 刷新token http://www.mashiroc.cn/gayligayliapi/refreshToken
+   - 刷新token <http://www.mashiroc.cn/gayligayliapi/refreshToken>
 
-        请求为一个JSON串，使用post请求
+     请求为一个JSON串，使用post请求
 
-        ```json
-        {
-            "timestamp":<timestamp>,
-         	"signature":<signature>
-        }
-        ```
+     ```json
+     {
+         "timestamp":<timestamp>,
+      	"signature":<signature>
+     }
+     ```
 
-        *注：需要将一个jwt附在请求的header上*
+     *注：需要将一个jwt附在请求的header上*
 
-        响应为一个JSON串
+     响应为一个JSON串
 
-        ```json
-        {
-            "result":<resule>,
-         	"jwt":<jwt>
-        }
-        ```
+     ```json
+     {
+         "result":<resule>,
+      	"jwt":<jwt>
+     }
+     ```
 
    ​
 
    1.2 注册
 
-   - 检查用户名是否存在 http://www.mashiroc.cn/gayligayliapi/isUserHas
+   - 检查用户名是否存在 <http://www.mashiroc.cn/gayligayliapi/isUserHas>
 
-      请求为一个get请求，需要两个参数
+     请求为一个get请求，需要两个参数
 
      ```
      usernameType=<usernameType>
@@ -143,7 +143,7 @@
 
      ​
 
-   - 注册 http://www.mashiroc.cn/gayligayliapi/register
+   - 注册 <http://www.mashiroc.cn/gayligayliapi/register>
 
      请求为一个JSON串，使用post请求
 
@@ -169,7 +169,7 @@
 
      ​
 
-   - 发送验证码 http://www.mashiroc.cn/gayligayliapi/verificationCode
+   - 发送验证码 <http://www.mashiroc.cn/gayligayliapi/verificationCode>
 
      请求为一个JSON串，使用post请求
 
@@ -194,11 +194,11 @@
 
 2. 视频相关
 
-   2.1 拉取主页信息 http://www.mashiroc.cn/gayligayliapi/homePage
+   2.1 拉取主页信息 <http://www.mashiroc.cn/gayligayliapi/homePage>
 
    请求为get请求
 
-   响应为一个json串
+   响应为一个JSON串
 
    ```json
    {
@@ -209,15 +209,26 @@
        fashion 时尚，life  生活，advertisement   广告, entertainment 娱乐
        movies  影视，screeningHall 放映室
        */
-       
-       aut   hor                                                                                  author 
+    	"typeNum":[<typeNum>],//各个分区的新视频数量
+     	"carousel":[<carousel>],//轮播的视频的信息
+   	"topInfo":[<topInfo>],//最上面轮播旁边的视频的信息
+     	"spread":[<spread>],//推广那一条
+   	"live":[<live>],//直播那一条
+       //下面是各个分区的信息
+       ...
+       "game":{
+                 "info":[<info>]//左边的视频信息
+     			 "rank":[<rank>]//右边的视频排名的视频信息
+               }
+     	...
+   }
    ```
 
    ​
 
    2.2 拉取视频详细信息，视频弹幕信息，视频评论信息
 
-   - 拉取  http://www.mashiroc.cn/gayligayliapi/videoPage
+   - 拉取 <http://www.mashiroc.cn/gayligayliapi/videoPage>
 
      请求为一个JSON串 post请求
 
@@ -246,7 +257,7 @@
 
    2.3 上传视频
 
-   - 获得上传凭证  http://www.mashiroc.cn/gayligayliapi/videoPage
+   - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/videoPage>
 
      请求为一个JSON串 post请求
 
@@ -262,7 +273,7 @@
      }
      ```
 
-   - 视频上传成功通知  http://www.mashiroc.cn/gayligayliapi/uploadSuccess
+   - 视频上传成功通知 <http://www.mashiroc.cn/gayligayliapi/uploadSuccess>
 
      在没有回调的情况下使用这个
 
@@ -276,17 +287,98 @@
      }
      ```
 
-   2.4 上传视频信息
-
 3. 视频点击事件相关
+
+   以下的请求都需要附带一个token在请求的header
 
    3.1 投硬币
 
+   请求为一个JSON串 post请求
+
+   ```json
+   {
+       "videoId":<videoId>,//要投硬币的视频的id
+       "sendCoin":<sendCoin>,//要投的硬币的数量
+       "timestamp":<timestamp>,
+       "signature":<signature>
+   }
+   ```
+
+   响应为一个JSON串
+
+   ```json
+   {
+     "result":<result>
+   }
+   ```
+
    3.2 收藏
+
+   请求为一个JSON串 post请求
+
+   ```json
+   {
+     "videoId":<videoId>,
+     "timestamp":<timestamp>,
+     "signature":<signature>
+   }
+   ```
+
+   响应为一个JSON串
+
+   ```json
+   {
+     "result":<result>
+   }
+   ```
 
    3.3 发送弹幕
 
+   请求为一个JSON串 post请求
+
+   ```json
+   {
+     "videoId":<videoId>,
+     "content":<content>,//评论的具体内容
+     "pid":<pid>,//该评论若为某评论下的回复，则是评论的id，若是新评论，则为0
+     "device":<device>,//评论使用的设备 iOS,Android,Windows
+     "timestamp":<timestamp>,
+     "signature":<signature>
+   }
+   ```
+
+   响应为一个JSON串
+
+   ```json
+   {
+     "result":<result>
+   }
+   ```
+
    3.4 发送评论
+
+   请求为一个JSON串 post请求
+
+   ```json
+   {
+     "videoId":<videoId>,
+     "content":<content>,//弹幕的具体内容
+     "appearTime":<appearTime>,//弹幕要出现的时间的秒数
+     "color":<color>,//弹幕的颜色
+     "fontsize":<fontsize>,//弹幕的字号
+     "position":<position>,//弹幕的位置，0为滚动，-1为下面，1为上面
+     "timestamp":<timestamp>,
+     "signature":<signature>
+   }
+   ```
+
+   响应为一个JSON串
+
+   ```json
+   {
+     "result":<result>
+   }
+   ```
 
    3.5 添加标签
 
@@ -309,5 +401,3 @@
    5.3 设置用户信息
 
    5.4 设置视频信息
-
-   ​

@@ -116,4 +116,14 @@ public class FinalStringUtil {
     public static final String UP_TOKEN = "upToken";
     public static final String DO_NOT_FIND_USER = "doNotFindUser";
 
+    public static final String SEND_COIN="sendCoin";
+    public static final String NOT_ENOUGH_COIN="notEnoughCoin";
+    public static final String VIDEO_ID="videoId";
+    public static final String USER_ID="userID";
+
+    public static final String COMMENT_PID="pid";
+    public static final String DO_NOT_FIND_COMMENT="doNotFindComment";
+
+    public static final String INIT_DESCRIPTION="没有描述~";
+
 }

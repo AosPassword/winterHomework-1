@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class JdbcUtil {
-    //TODO:数据库连接
     private static BasicDataSource basicDataSource;
 
     public static BasicDataSource getBasicDataSource(){

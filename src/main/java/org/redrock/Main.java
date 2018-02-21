@@ -3,6 +3,7 @@ package org.redrock;
 import net.sf.json.JSONObject;
 import org.redrock.gayligayli.util.SecretUtil;
 
+import javax.validation.constraints.Email;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
@@ -14,12 +15,15 @@ import static org.redrock.gayligayli.util.FinalStringUtil.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(TELEPHONE,"17347898530");
+        jsonObject.put(USERNAME_TYPE, "email");
+        jsonObject.put(USERNAME,"mashiroc@outlook.com");
+        jsonObject.put(NICKNAME,"Testttttt");
+        jsonObject.put(PASSWORD,"password!");
         long time = (long) Math.ceil(new Date().getTime()/1000);
         jsonObject.put(TIMESTAMP,time);
-        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256("17347898530."+String.valueOf(time)));
+        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256("email.mashiroc@outlook.com.Testttttt.password!."+String.valueOf(time)));
         System.out.println(jsonObject.toString());
-        String result = sendPost("http://localhost:8080/verificationCode",jsonObject.toString());
+        String result = sendPost("http://localhost:8080/register",jsonObject.toString());
         System.out.println(result);
     }
 

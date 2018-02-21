@@ -7,6 +7,8 @@ package org.redrock.gayligayli.Dao;
  * @time 2018.2.11 14:13
  */
 
+import org.redrock.gayligayli.util.SecretUtil;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -74,7 +76,7 @@ public class UserDao {
      * @param usernameType 用户名的类型
      * @return 用户的id
      */
-public static int getUserid(String usernameType, String username) {
+    public static int getUserid(String usernameType, String username) {
 
         int id = -1;
         String sql = "SELECT id FROM user WHERE " + usernameType + " = ?";
@@ -186,7 +188,7 @@ public static int getUserid(String usernameType, String username) {
      */
     public static void insertNewUser(String nickname, String password, String username, String usernameType) {
 
-        String sql = "INSERT INTO user(nickname,?,password,photoUrl,bigVip,coin,Bcoin,experience,level) VALUE(?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO user(nickname,"+usernameType+",password,photo_url,big_vip,coin,b_coin,experience,level,description) VALUE(?,?,?,?,?,?,?,?,?,?)";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
@@ -194,16 +196,17 @@ public static int getUserid(String usernameType, String username) {
 
             connection = JdbcUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, usernameType);
-            preparedStatement.setString(2, nickname);
-            preparedStatement.setString(3, username);
-            preparedStatement.setString(4, password);
-            preparedStatement.setString(5, initPhotoUrl);
-            preparedStatement.setString(6, N_STR);
+            preparedStatement.setString(1, nickname);
+            preparedStatement.setString(2, username);
+            preparedStatement.setString(3, SecretUtil.encoderHs256(password));
+            preparedStatement.setString(4, initPhotoUrl);
+            preparedStatement.setString(5, N_STR);
+            preparedStatement.setInt(6, 0);
             preparedStatement.setInt(7, 0);
             preparedStatement.setInt(8, 0);
-            preparedStatement.setInt(9, 0);
-            preparedStatement.executeQuery();
+            preparedStatement.setInt(9,1);
+            preparedStatement.setString(10,INIT_DESCRIPTION);
+            preparedStatement.execute();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -215,13 +218,69 @@ public static int getUserid(String usernameType, String username) {
     }
 
     public static void uploadSuccess(int avId) {
-        String sql = "UPLOAD user SET success = 'y' WHERE avId = ?";
+        String sql = "UPDATE user SET success = 'y' WHERE avId = ?";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = JdbcUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, String.valueOf(avId));
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection, preparedStatement);
+        }
+    }
+
+    public static int getCoin(int userId) {
+        String sql = "SELECT coin FROM user WHERE id = ?";
+        int coin = -1;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                coin = resultSet.getInt(COIN);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection,preparedStatement);
+        }
+        return coin;
+    }
+
+    public static void reduceCoin(int sendCoin,int userId) {
+        String sql = "UPDATE user SET coin = coin - ? WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setInt(1,sendCoin);
+            preparedStatement.setInt(2,userId);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection,preparedStatement);
+        }
+    }
+
+    public static void addCollection(int userId, int videoId) {
+        String sql = "INSERT collection(userId,videoId) VALUE(?,?)";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setInt(1,userId);
+            preparedStatement.setInt(2,videoId);
             preparedStatement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

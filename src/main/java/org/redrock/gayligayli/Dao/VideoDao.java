@@ -7,8 +7,6 @@ package org.redrock.gayligayli.Dao;
  * @time 2018.2.11 14-28
  */
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.redrock.gayligayli.service.videoInfo.been.Barrage;
 import org.redrock.gayligayli.service.videoInfo.been.Comment;
 import org.redrock.gayligayli.service.videoInfo.been.Video;
@@ -380,17 +378,7 @@ public class VideoDao {
         }
     }
 
-    public static void main(String[] args) {
-        Map<String, Integer> map = new HashMap<>();
-        map.put("test1", 1);
-        map.put("test2", 2);
-        map.put("test3", 3);
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = JSONObject.fromObject(map);
-        jsonArray.element(map);
-        System.out.println(jsonObject);
-    }
-
+    //TODO:获得收藏数
     public static int getCollectionNum(int id) {
         return -1;
     }
@@ -420,15 +408,15 @@ public class VideoDao {
                 preparedStatement.setInt(8, 1);
                 preparedStatement.setInt(9, 0);
                 preparedStatement.setString(10, photoUrl);
-                preparedStatement.setString(11,videoUrl);
-                preparedStatement.setString(12,"IDK");
-                preparedStatement.setString(13,"n");
+                preparedStatement.setString(11, videoUrl);
+                preparedStatement.setString(12, "IDK");
+                preparedStatement.setString(13, "n");
                 preparedStatement.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("添加视频抛错！");
             } finally {
-                JdbcUtil.close(connection,preparedStatement);
+                JdbcUtil.close(connection, preparedStatement);
             }
             return avId;
         }
@@ -437,15 +425,14 @@ public class VideoDao {
 
     public static int getVideoId(String usernameType, String username) {
         int id = -1;
-        String sql = "SELECT id FROM video WHERE ?=?";
+        String sql = "SELECT id FROM video WHERE " + usernameType + " = ?";
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             connection = JdbcUtil.getConnection();
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, usernameType);
-            preparedStatement.setString(2, username);
+            preparedStatement.setString(1, username);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 id = resultSet.getInt(ID);
@@ -457,5 +444,121 @@ public class VideoDao {
             JdbcUtil.close(connection, preparedStatement);
         }
         return id;
+    }
+
+    public static void addCoin(int sendCoin, int id) {
+        String sql = "UPDATE video SET coin = coin + ? WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, sendCoin);
+            preparedStatement.setInt(2, id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection, preparedStatement);
+        }
+    }
+
+    public static void addBarrage(int videoId, int authorId, String content, String appearTime, String sendTime, String color, int fontsize, int position) {
+        String sql = "INSERT barrage(video_id,author_id,content,appear_time,send_time,color,fontsize,position) VALUE(?,?,?,?,?,?,?,?)";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, videoId);
+            preparedStatement.setInt(2, authorId);
+            preparedStatement.setString(3, content);
+            preparedStatement.setString(4, appearTime);
+            preparedStatement.setString(5, sendTime);
+            preparedStatement.setString(6, color);
+            preparedStatement.setInt(7, fontsize);
+            preparedStatement.setInt(8, position);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection, preparedStatement);
+        }
+    }
+
+    public static boolean pidExist(int pid) {
+        if (pid == 0) {
+            return true;
+        }
+        boolean flag = false;
+        String sql = "SELECT * FROM comment WHERE id = ?";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, pid);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                flag = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection, preparedStatement, resultSet);
+        }
+        return flag;
+    }
+
+    public static void addComment(int videoId, int pid, int authorId, String content, String time, String device) {
+        int num = 0;
+        if (pid == 0) {
+            num = getCommentNum(VIDEO_ID,videoId);
+        } else {
+            num = getCommentNum(ID,pid);
+        }
+        String sql = "INSERT comment(video_id,pid,author_id,content,time,device,num) VALUE(?,?,?,?,?,?,?)";
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement=connection.prepareStatement(sql);
+            preparedStatement.setInt(1,videoId);
+            preparedStatement.setInt(2,pid);
+            preparedStatement.setInt(3,authorId);
+            preparedStatement.setString(4,content);
+            preparedStatement.setString(5,time);
+            preparedStatement.setString(6,device);
+            preparedStatement.setInt(7,num);
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection,preparedStatement);
+        }
+    }
+
+
+    public static int getCommentNum(String flag, int temp) {
+        String sql = "SELECT * FROM comment WHERE " + flag + " = ? ORDER BY num DESC LIMIT 1";
+        int num = -1;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = JdbcUtil.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, temp);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                num = resultSet.getInt(NUM);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            JdbcUtil.close(connection, preparedStatement, resultSet);
+        }
+        return num;
     }
 }
