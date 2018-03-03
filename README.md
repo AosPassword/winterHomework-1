@@ -339,7 +339,6 @@
      ```json
      {
          "name":<name>,//视频的名字
-       	"nickname":<nickname>,//up主的名字
        	"type":<type>,//视频的分区 上见分区命名
        	"description":<description>,//视频的详细描述
        	"length":<length>,//视频的长度
