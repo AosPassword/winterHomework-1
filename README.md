@@ -334,6 +334,12 @@
 
    - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/videoPage>
 
+     上传到七牛云时需要把视频的名字改为得到的av号
+
+     上传url:http://p3qhkqnrm.bkt.clouddn.com/video/
+
+     //这里我也不知道要不要加video 是传到域名video文件夹下 似乎是要把文件名改成video/123455.mp4这样子上传到去掉video的url
+
      请求为一个JSON串 post请求
 
      ```json
