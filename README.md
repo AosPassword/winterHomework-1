@@ -209,16 +209,91 @@
        fashion 时尚，life  生活，advertisement   广告, entertainment 娱乐
        movies  影视，screeningHall 放映室
        */
-    	"typeNum":[<typeNum>],//各个分区的新视频数量
-     	"carousel":[<carousel>],//轮播的视频的信息
-   	"topInfo":[<topInfo>],//最上面轮播旁边的视频的信息
-     	"spread":[<spread>],//推广那一条
-   	"live":[<live>],//直播那一条
+    	"typeNum":{//各个分区的新视频数量
+         ···
+           "game":123;
+         ···
+       },
+     	"carousel":[//轮播的视频的信息
+           ···
+         {
+           "id":<id>,
+         	"name":<name>,
+         	"photoUrl":<photoUrl>//封面图片的url
+         },
+         ···
+       ],
+   	"topInfo":[//最上面轮播旁边的视频的信息
+         ···
+         {
+           "id":<id>,
+         	"name":<name>,
+         	"author":{//所有的author的格式都是一样的 下面不重复
+           	"id":<id>,
+         		"name":<name>,
+         		"description":<description>,
+         		"level":<level>,
+         		"photoUrl":<photoUrl>,//头像url
+         	}
+         	"views":<views>,
+         	"photoUrl":<photoUrl>
+         },
+         ···
+       ],
+     	"spread":[//推广那一条
+       ···
+         {
+           "id":<id>,
+         	"name":<name>,
+         	"length":<length>,//视频长度
+         	"photoUrl":<photoUrl>
+         },
+         ···],
+   	"live":[
+       	···
+         	{
+         		"name":<name>,
+         		"author":<author>,//播主名字
+         		"type":<type>,//带着子分类的直播类型
+         		"views":<views>,//直播人数
+         		"photoUrl":<photoUrl>,//封面url
+         		"videoUrl":<videoUrl>,//鼠标移上去出现的图片的url
+         	},
+         ···
+       ],//直播那一条
        //下面是各个分区的信息
        ...
        "game":{
-                 "info":[<info>]//左边的视频信息
-     			 "rank":[<rank>]//右边的视频排名的视频信息
+                 "info":[
+     					···
+    					 {
+     						"id":<id>,
+     						"name":<name>,
+     						"author":<author>,
+     						"length":<length>,
+     						"views":<views>,//播放量
+     						"barrageNum":<barrageNum>,//弹幕数
+     						"photoUrl":<photoUrl>
+   					}
+     					···
+     					]//左边的视频信息
+     			 "rank":[
+                		···
+                  		{
+                  			"id":<id>,
+                  			"name":<name>,
+                  			"author":<author>,
+                  			"time":<time>,//上传时间
+                  			"description":<description>,//视频描述
+                  			"photoUrl":<photoUrl>,
+                  			"views":<views>,
+                  			"collection":<collection>,//收藏数
+                  			"coin":<coin>,//硬币数
+                  			"barrageNum":<barrageNum>,
+                  			"score":<score>,//权
+                  		}，
+                  		···
+                		]//右边的视频排名的视频信息
                }
      	...
    }
@@ -385,10 +460,6 @@
 4. 个人信息相关
 
    4.1 拉取个人信息
-
-   4.2 拉取粉丝列表
-
-   4.3 拉取关注列表
 
    4.4 拉取收藏
 
