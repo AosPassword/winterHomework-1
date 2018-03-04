@@ -33,6 +33,7 @@ public class Video implements Comparable {
 
     public Video(Map<String,Object> map){
         this.setId((Integer) map.get(ID));
+        this.setAvId((Integer) map.get(AV_ID_DATA));
         this.setName((String)map.get(NAME));
         this.setType((String) map.get(TYPE));
         this.setChildType((Integer) map.get(CHILD_TYPE_DATA));
@@ -98,7 +99,6 @@ public class Video implements Comparable {
         jsonObject.put(AUTHOR, author.toString());
         jsonObject.put(VIEWS, views);
         jsonObject.put(PHOTO_URL, photoUrl);
-        System.out.println("top "+jsonObject.toString());
         return jsonObject.toString();
     }
 

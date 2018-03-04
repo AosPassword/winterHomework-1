@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
@@ -50,7 +52,6 @@ public class Receiver {
 
     private boolean isSignatureTrue() {
         String signature;
-        System.out.println("is,requestJson "+requestJson);
         if (requestJson != null) {
             if ((signature = requestJson.getString(SIGNATURE)) != null) {
                 Iterator it = requestJson.keys();
@@ -63,18 +64,13 @@ public class Receiver {
                     }
                     sb.append(requestJson.getString(key)).append(SIGNATURE_SEPARATOR);
                 }
-                System.out.println("json  " + sb.toString());
-                System.out.println(signature);
-                System.out.println(SecretUtil.encoderHs256(sb.toString()));
                 if (SecretUtil.isSecret(sb.toString(), signature)) {
-                    System.out.println("secretYes");
                     if (TimeUtil.requestIsNotOvertime(requestJson.getString(TIMESTAMP), REQUEST_OVERTIME_SECOND)) {
                         return true;
                     } else {
                         flag = -1;
                     }
                 } else {
-                    System.out.println("notSecret");
                     flag = 0;
                 }
             }
@@ -83,7 +79,6 @@ public class Receiver {
     }
 
     private void errorString() {
-        System.out.println(flag);
         if (flag == 0) {
             responseJson.put(RESULT, SIGNATURE_ERROR);
         } else {
@@ -157,7 +152,7 @@ public class Receiver {
                 String nickname = requestJson.getString(NICKNAME);
                 String password = requestJson.getString(PASSWORD);
                 if (!LoginUtil.hasUser(usernameType, username)) {
-                    UserDao.insertNewUser(nickname, password, username, usernameType);
+                    UserDao.insertNewUser(nickname, SecretUtil.encoderHs256(password), username, usernameType);
                     Token token = new Token();
                     token.setSub(AUTHOR);
                     token.setTime(TOKEN_OVERTIME_SECOND);
@@ -205,12 +200,10 @@ public class Receiver {
         //类型数量
         JSONObject typeNumJson = JSONObject.fromObject(VideoDao.getTypesNumMap());
         responseJson.put(TYPE_NUM, typeNumJson);
-        System.out.println(1);
         //轮播那一条
         JSONArray carouselJson = new JSONArray();
         JSONArray topInfoJson = new JSONArray();
         Set<Video> carouselList = VideoDao.getCarouselVideoSet((long) Math.ceil(new Date().getTime() / 1000));
-        System.out.println(3);
         {
             int i = 0;
             for (Video video : carouselList) {
@@ -223,9 +216,7 @@ public class Receiver {
             }
             responseJson.put(CAROUSEL, carouselJson);
             responseJson.put(TOP_INFO, topInfoJson);
-            System.out.println("resp"+responseJson);
         }
-        System.out.println(2);
         //推广那一条
         JSONArray spreadJson = new JSONArray();
         Set<Video> spreadList = VideoDao.getSpreadVideoSet();
@@ -233,7 +224,6 @@ public class Receiver {
             spreadJson.element(video.toSpreadStirng());
         }
         responseJson.put(SPREAD, spreadJson);
-        System.out.println("tuiguang");
         //直播
         JSONArray liveVideoJson = new JSONArray();
         Set<Video> liveVideoList = VideoDao.getLiveVideoListSet();
@@ -241,22 +231,23 @@ public class Receiver {
             liveVideoJson.element(video.toLiveString());
         }
         responseJson.put(LIVE, liveVideoJson);
-        System.out.println("zhibo");
         //各个分区
+        ExecutorService executorService = Executors.newFixedThreadPool(14);
         for (Object str : partition) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
             JSONObject partitionJson = new JSONObject();
 
             JSONArray partitionInfoJson = new JSONArray();
-            System.out.println("flag0");
             Set<Video> partitionInfoSet = VideoDao.getPartitionInfoSet((String) str);
             for (Video video : partitionInfoSet) {
                 partitionInfoJson.element(video.toBriefString());
             }
             partitionJson.element(INFO, partitionInfoJson);
-            System.out.println("flag1");
-            JSONArray partitionRankJson = new JSONArray();;
+            JSONArray partitionRankJson = new JSONArray();
+            ;
             Set<Video> partitionRankSet = VideoDao.getPartitionRankSet((String) str, (long) Math.ceil(new Date().getTime() / 1000));
-            System.out.println(partitionRankSet);
             {
                 int i = 0;
                 for (Video video : partitionRankSet) {
@@ -267,12 +258,13 @@ public class Receiver {
                     partitionRankJson.element(tempJson.toString());
                 }
             }
-            System.out.println("flag2");
             partitionJson.element(RANK, partitionRankJson);
 
             responseJson.put(str, partitionJson);
-            System.out.println(str);
+                }
+            });
         }
+        executorService.shutdown();
     }
 
     //TODO:我也不知道这个是干啥的
@@ -347,13 +339,14 @@ public class Receiver {
         }
     }
 
-    public void UploadSuccess() {
+    public void uploadSuccess() {
         if (isSignatureTrue()) {
-            if (requestJson.size() == 2) {
+            if (requestJson.size() == 3) {
+
                 if (token.isToken()) {
                     if (token.isNotTokenOverTime()) {
                         int avId = requestJson.getInt(AV_ID);
-                        if (VideoDao.getVideoId(AV_ID, String.valueOf(avId)) != -1) {
+                        if (VideoDao.getVideoId(AV_ID_DATA, String.valueOf(avId)) != -1) {
                             UserDao.uploadSuccess(avId);
                             responseJson.put(RESULT, SUCCESS);
                         } else {
@@ -469,9 +462,9 @@ public class Receiver {
 
     public void sendBarrage() {
         if (isSignatureTrue()) {
-            if (requestJson.containsKey(CONTENT) && requestJson.containsKey(APPEAR_TIME) && requestJson.containsKey(SEND_TIME) &&
-                    requestJson.containsKey(COLOR) && requestJson.containsKey(FONTSIZE) && requestJson.containsKey(POSITION) &&
-                    requestJson.size() == 9) {
+            if (requestJson.containsKey(CONTENT) && requestJson.containsKey(APPEAR_TIME) && requestJson.containsKey(POSITION) &&
+                    requestJson.containsKey(COLOR) && requestJson.containsKey(FONTSIZE) && requestJson.size() == 8) {
+
                 if (token.isToken()) {
                     if (token.isNotTokenOverTime()) {
                         int videoId = requestJson.getInt(VIDEO_ID);

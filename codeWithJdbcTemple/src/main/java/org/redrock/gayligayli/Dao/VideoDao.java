@@ -8,6 +8,7 @@ package org.redrock.gayligayli.Dao;
  */
 
 import org.omg.CORBA.INTERNAL;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ObjectHelper;
 import org.redrock.gayligayli.service.videoInfo.been.Barrage;
 import org.redrock.gayligayli.service.videoInfo.been.Comment;
@@ -184,11 +185,10 @@ public class VideoDao extends Dao {
             for (Map<String, Object> aList : list) {
                 carouselInfo.add(new Video(aList));
             }
-        System.out.println(11);
+
             while (carouselInfo.size() < 13) {
                 carouselInfo.add(getAllTypeRandomVideo());
             }
-        System.out.println(22);
         return carouselInfo;
 
     }
@@ -222,7 +222,6 @@ public class VideoDao extends Dao {
     }
 
     public static Set<Video> getPartitionInfoSet(String type) {
-        System.out.println(type);
         Set<Video> partitionSet = new HashSet<>();
         while (partitionSet.size() < 10) {
             partitionSet.add(getOneTypeRandomVideo(type));
@@ -247,16 +246,16 @@ public class VideoDao extends Dao {
     }
 
     public static Video getVideoInfo(int id) {
-        String sql = "SELECT video.*,user.* FROM video,user WHERE video.id = ? AND video.author_id = user.id AND success = 'y'";
-        Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+        String sql = "SELECT video.* FROM video WHERE id = ? AND success = 'y'";
+        Map<String, Object> map = jdbcTemplate.queryForMap(sql,id);
 
         return new Video(map);
     }
 
     public static ArrayList<Barrage> getBarrageList(int id) {
-        String sql = "SELECT * FROM barrage WHERE video_id = ? ORDER BY time";
+        String sql = "SELECT * FROM barrage WHERE video_id = ? ORDER BY appear_time";
         ArrayList<Barrage> barragesList = new ArrayList<>();
-        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,id);
         for (Map<String, Object> aList : list) {
             barragesList.add(new Barrage(aList));
         }
@@ -264,7 +263,7 @@ public class VideoDao extends Dao {
     }
 
     public static ArrayList<Comment> getCommentList(int id) {
-        String sql = "SELECT comment.* , user.* FROM comment,user WHERE comment.Video_id = ? AND comment.pid=0 AND comment.author_id=user.id GROUP BY comment.num ORDER BY comment.num";
+        String sql = "SELECT * FROM comment WHERE video_id = ? AND pid=0 GROUP BY id ORDER BY num";
         ArrayList<Comment> commentsList = new ArrayList<>();
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, id);
         for (Map<String, Object> aList : list) {
@@ -279,10 +278,9 @@ public class VideoDao extends Dao {
     }
 
     private static ArrayList<Comment> getDfsCommentList(int pid) {
-        String sql = "SELECT comment.*,user.* FROM comment,user WHERE comment.pid = ? AND comment.author_id=user.id GROUP BY comment.id ORDER BY time";
+        String sql = "SELECT * FROM comment WHERE pid = ? GROUP BY id ORDER BY time";
         ArrayList<Comment> commentList = new ArrayList<>();
         List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, pid);
-
         for (Map<String, Object> aList : list) {
             commentList.add(new Comment(aList));
         }
@@ -336,7 +334,6 @@ public class VideoDao extends Dao {
     public static int addVideo(String name, int authorId, String type, String description, String time, String length) {
         int avId = VideoInfoUtil.getAvid();
         String names[] = name.split("\\.");
-        System.out.println(names.length + " " + name);
         if (names.length == 2) {
             String photoUrl = VideoInfoUtil.getPhotoUrl(avId, names[1]);
             String videoUrl = VideoInfoUtil.getVideoUrl(avId, names[1]);
@@ -376,10 +373,11 @@ public class VideoDao extends Dao {
 
     public static int getVideoId(String usernameType, String username) {
         int id;
+
         String sql = "SELECT id FROM video WHERE " + usernameType + " = ?";
-        Integer object = jdbcTemplate.queryForObject(sql, new Object[]{username}, Integer.class);
-        if (object != null) {
-            return object;
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql, username);
+        if (list.size()!=0) {
+            return (int)list.get(0).get(ID);
         } else {
             return -1;
         }
@@ -455,7 +453,7 @@ public class VideoDao extends Dao {
     public static void addComment(int videoId, int pid, int authorId, String content, String time, String device) {
         int num;
         if (pid == 0) {
-            num = getCommentNum(VIDEO_ID, videoId);
+            num = getCommentNum(VIDEO_ID_DATA, videoId)+1;
         } else {
             num = getCommentNum(ID, pid);
         }
@@ -484,11 +482,11 @@ public class VideoDao extends Dao {
 
     public static int getCommentNum(String flag, int temp) {
         String sql = "SELECT num FROM comment WHERE " + flag + " = ? ORDER BY num DESC LIMIT 1";
-        Integer commentNum = jdbcTemplate.queryForObject(sql, new Object[]{temp}, Integer.class);
-        if (commentNum != null) {
-            return commentNum;
-        } else {
-            return -1;
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql, temp);
+        if(list.size()==0){
+            return 1;
+        }else {
+            return (int) list.get(0).get(NUM);
         }
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;

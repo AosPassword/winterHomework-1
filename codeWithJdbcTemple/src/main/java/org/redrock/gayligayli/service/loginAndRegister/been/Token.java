@@ -38,7 +38,6 @@ jti：JWT ID为web token提供唯一标识
             this.playloadMap= new HashMap<>();
             this.header = tokens[0];
             this.playloadStr = new String(Base64.getDecoder().decode(tokens[1].getBytes()));
-            System.out.println(this.playloadStr);
             JSONObject jsonObject = JSONObject.fromObject(this.playloadStr);
             Set<String> set = jsonObject.keySet();
             for (String key : set) {
@@ -109,11 +108,6 @@ jti：JWT ID为web token提供唯一标识
     public boolean isToken() {
         if (this.header != null && this.playloadStr != null && this.signature != null) {
             String userSignature = SecretUtil.encoderHs256(header + "." + Base64.getEncoder().encodeToString(playloadStr.getBytes()));
-            System.out.println(userSignature);
-            System.out.println("one");
-            System.out.println(signature);
-            System.out.println("two");
-            System.out.println(playloadMap.size());
             if (this.signature.equals(userSignature) && playloadMap.size() == 11) {
                 return true;
             }
@@ -130,12 +124,11 @@ jti：JWT ID为web token提供唯一标识
 
 
     public static void main(String[] args) {
-        HashMap playloadMap = new HashMap();
+        Map<String,String> playloadMap = new HashMap<>();
         long time = 1000000000L;
         long nowTime = (long) Math.ceil(new Date().getTime() / 1000);
         playloadMap.put("nbf", String.valueOf(time));
         playloadMap.put("iat", String.valueOf(nowTime));
         playloadMap.put("exp", String.valueOf(nowTime + time));
-        System.out.println(playloadMap);
     }
 }

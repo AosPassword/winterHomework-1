@@ -1,13 +1,8 @@
 package org.redrock.gayligayli.service.videoInfo.been;
 
 import net.sf.json.JSONObject;
-import org.redrock.gayligayli.Dao.JdbcUtil;
 import org.redrock.gayligayli.Dao.UserDao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;

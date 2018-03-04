@@ -11,6 +11,8 @@ public class UploadSuccessCommand extends Command {
 
     @Override
     public void exectue() {
-        receiver.UploadSuccess();
+
+        System.out.println("success");
+        receiver.uploadSuccess();
     }
 }

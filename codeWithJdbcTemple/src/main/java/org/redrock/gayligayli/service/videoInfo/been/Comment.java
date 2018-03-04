@@ -1,6 +1,7 @@
 package org.redrock.gayligayli.service.videoInfo.been;
 
 import lombok.Data;
+import net.sf.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,5 +34,19 @@ public class Comment {
         device = (String) map.get(DEVICE);
         praise = (int) map.get(PRAISE);
         childComment = new ArrayList<>();
+    }
+
+    @Override
+    public String toString(){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(ID,id);
+        jsonObject.put(AUTHOR,author.toString());
+        jsonObject.put(CONTENT,content);
+        jsonObject.put(NUM,num);
+        jsonObject.put(TIME,time);
+        jsonObject.put(DEVICE,device);
+        jsonObject.put(PRAISE,praise);
+        jsonObject.put(CHILD_COMMENT,childComment.toString());
+        return jsonObject.toString();
     }
 }

@@ -322,11 +322,50 @@
      {
          "result":<result>,
      	//视频的信息
-         "video":<video>.
-         //弹幕列表
-         "barrage":<barrage>
-         //评论列表 树形结构
-         "comment":<comment>
+         "videoInfo":{
+         				"id":726,
+       					"name":"番茄焖饭—业余美食博主的周五放送",
+       					"author":<author>,//上面找
+       					"type":"life",
+       					"childType":0,//子分类 暂时不用管
+       					"avId":20270547,//av号
+       					"description":"视频来自bilibili",//视频详细描述
+       					"time":"1519982687",//发送时间戳
+       					"length":"60",//视频长度 单位：秒
+       					"views":66222,//浏览量
+       					"coin":1286,//硬币数
+       					"collection":1//收藏数
+       					"barrageNum":1//弹幕数
+                    		 "photoUrl":"url",//封面url
+       					"videoUrl":"test"
+     					},
+     	//弹幕的信息
+     	"barrage":[
+           			{
+                       "content":"test",//弹幕内容
+                       "sendTime":"1520144809",//发弹幕的时间
+                       "authorId":6,//创作者的id
+                       "color":"red",//弹幕颜色
+                       "position":0,//弹幕位置 -1是下面 0是滚动 1是上面
+                       "appearTime":"10"//出现在视频的第几秒
+                     }
+         		],
+     	"comment":[
+           			{"id":1,//评论id
+                      "author":<author>,//用户信息
+                      "content":"test",//评论信息
+                      "num":1,//楼数
+                      "time":"1520145218",//评论时间的时间戳
+                      "device":"windows",//评论使用的设备
+                      "praise":0,//赞数
+                      "childComment":[
+                      //这里面的结构和父节点结构一样
+                      //没有子评论的话这个array的size为0
+                      ]},
+         			···
+         ]}
+     				
+       ,
      }
      ```
 

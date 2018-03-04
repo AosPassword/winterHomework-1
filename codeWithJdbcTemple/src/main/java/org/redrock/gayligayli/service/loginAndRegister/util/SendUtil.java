@@ -38,7 +38,6 @@ public class SendUtil {
         if (response.getCode() != null && "OK".equals(response.getCode())) {
             return String.valueOf(code);
         }
-        System.out.println(response.getCode());
         return null;
 
     }

@@ -1,15 +1,12 @@
 package org.redrock.gayligayli.controller.listener;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.redrock.gayligayli.Dao.Dao;
-import org.redrock.gayligayli.Dao.JdbcUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.beans.PropertyVetoException;
 
 @WebListener
 public class DatabaseListener implements ServletContextListener {

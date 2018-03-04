@@ -1,7 +1,6 @@
 package org.redrock.gayligayli.controller.servlet.spider;
 
 import net.sf.json.JSONArray;
-import org.redrock.gayligayli.Dao.JdbcUtil;
 import org.redrock.gayligayli.Dao.VideoDao;
 import org.redrock.gayligayli.util.JsonUtil;
 

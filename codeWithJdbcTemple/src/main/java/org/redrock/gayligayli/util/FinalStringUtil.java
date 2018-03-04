@@ -127,7 +127,10 @@ public class FinalStringUtil {
     public static final String SEND_COIN="sendCoin";
     public static final String NOT_ENOUGH_COIN="notEnoughCoin";
     public static final String VIDEO_ID="videoId";
+    public static final String VIDEO_ID_DATA="video_id";
     public static final String USER_ID="userID";
+
+    public static final String CHILD_COMMENT="childComment";
 
     public static final String COMMENT_PID="pid";
     public static final String DO_NOT_FIND_COMMENT="doNotFindComment";

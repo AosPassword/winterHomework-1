@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
@@ -41,10 +42,10 @@ public class UserDao extends Dao {
         Map<String, String> info = new HashMap<>();
         info.put(NICKNAME, (String) map.get(NICKNAME));
         info.put(BIG_VIP, (String) map.get(BIG_VIP_DATA));
-        info.put(COIN, (String) map.get(COIN));
-        info.put(B_COIN, (String) map.get(B_COIN_DATA));
-        info.put(EXPERIENCE, (String) map.get(EXPERIENCE));
-        info.put(LEVEL, (String) map.get(LEVEL));
+        info.put(COIN, String.valueOf((int) map.get(COIN)));
+        info.put(B_COIN, String.valueOf((int) map.get(B_COIN_DATA)));
+        info.put(EXPERIENCE, String.valueOf((int) map.get(EXPERIENCE)));
+        info.put(LEVEL, String.valueOf((int)  map.get(LEVEL)));
 
         return info;
 
@@ -60,9 +61,9 @@ public class UserDao extends Dao {
     public static int getUserid(String usernameType, String username) {
 
         String sql = "SELECT id FROM user WHERE " + usernameType + " = ?";
-        Integer userId = jdbcTemplate.queryForObject(sql,new Object[]{username},Integer.class);
-        if(userId!=null){
-            return userId;
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,new Object[]{username});
+        if(list.size()!=0){
+            return (int)list.get(0).get(ID);
         } else {
             return -1;
         }
@@ -95,10 +96,13 @@ public class UserDao extends Dao {
      * @return 用户的昵称
      */
     public static String getUserNickname(int id) {
-
-        String nickname;
         String sql = "SELECT nickname FROM user WHERE id = ?";
-        nickname = jdbcTemplate.queryForObject(sql,new Object[]{id},String.class);
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,id);
+        if(list.size()==0){
+            return null;
+        }else {
+            return (String) list.get(0).get(NICKNAME);
+        }
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
 //        ResultSet resultSet = null;
@@ -120,8 +124,6 @@ public class UserDao extends Dao {
 //        } finally {
 //            JdbcUtil.close(connection, preparedStatement, resultSet);
 //        }
-
-        return nickname;
 
     }
 
@@ -180,7 +182,7 @@ public class UserDao extends Dao {
 
 //        try {
 
-        jdbcTemplate.update(sql,password,initPhotoUrl,0,N_STR,0,0,0,1,INIT_DESCRIPTION);
+        jdbcTemplate.update(sql,nickname,username,password,initPhotoUrl,N_STR,0,0,0,1,INIT_DESCRIPTION);
 
 //            connection = JdbcUtil.getConnection();
 //            preparedStatement = connection.prepareStatement(sql);
@@ -211,7 +213,7 @@ public class UserDao extends Dao {
      */
     public static void uploadSuccess(int avId) {
 
-        String sql = "UPDATE user SET success = 'y' WHERE av_id = ?";
+        String sql = "UPDATE video SET success = 'y' WHERE av_id = ?";
         jdbcTemplate.update(sql,avId);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
