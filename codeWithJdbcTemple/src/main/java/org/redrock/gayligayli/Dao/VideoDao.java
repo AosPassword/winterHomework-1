@@ -7,6 +7,7 @@ package org.redrock.gayligayli.Dao;
  * @time 2018.2.11 14-28
  */
 
+import org.apache.commons.collections.list.TreeList;
 import org.omg.CORBA.INTERNAL;
 import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ObjectHelper;
@@ -504,5 +505,15 @@ public class VideoDao extends Dao {
 //        } finally {
 //            JdbcUtil.close(connection, preparedStatement, resultSet);
 //        }
+    }
+
+    public static ArrayList<Video> searchVideo(String sql, String data) {
+        ArrayList<Video> videoList = new ArrayList<>();
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,data);
+        for (Map<String, Object> map : list) {
+            Video video = new Video(map);
+            videoList.add(video);
+        }
+        return videoList;
     }
 }

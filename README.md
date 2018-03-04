@@ -371,7 +371,7 @@
 
    2.3 上传视频
 
-   - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/videoPage>
+   - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/uploadToken>
 
      上传到七牛云时需要把视频的名字改为得到的av号
 
@@ -410,7 +410,7 @@
 
    以下的请求都需要附带一个token在请求的header
 
-   3.1 投硬币
+   3.1 投硬币 http://www.mashiroc.cn/gayligayliapi/sendCoin
 
    请求为一个JSON串 post请求
 
@@ -431,9 +431,9 @@
    }
    ```
 
-   3.2 收藏
+   3.2 收藏 http://www.mashiroc.cn/gayligayliapi/addCollection
 
-   请求为一个JSON串 post请求
+   请求为一个JSON串 post请求 
 
    ```json
    {
@@ -453,7 +453,7 @@
 
    3.3 发送弹幕
 
-   请求为一个JSON串 post请求
+   请求为一个JSON串 post请求 http://www.mashiroc.cn/gayligayliapi/sendBarrage
 
    ```json
    {
@@ -476,7 +476,7 @@
 
    3.4 发送评论
 
-   请求为一个JSON串 post请求
+   请求为一个JSON串 post请求 http://www.mashiroc.cn/gayligayliapi/sendComment
 
    ```json
    {
@@ -499,7 +499,40 @@
    }
    ```
 
-   3.5 添加标签
+   3.5 搜索 http://www.mashiroc.cn/gayligayliapi/search
+
+   请求为一个JSON串 post请求 
+
+   ```json
+   {
+       "data":<data>,//搜索的内容 使用base64编码
+     	"page":<page>,//第几页
+     	"timestamp":<timestamp>,
+     	"signature":<signature>
+   }
+   ```
+
+   响应为一个JSON串
+
+   ```json
+   {
+     "result":"success",
+     "data":[//最多有二十个
+       ···
+       {"id":464,
+       "name":"戊戌年华语MAD文化祭第二日",
+       "views":144,
+       "length":"60",
+       "time":"1520074910",
+       "authorName":"来自bilibili",
+       "photoUrl":"url"}
+     	···
+     ]
+   }
+
+   ```
+
+   ​
 
 4. 个人信息相关
 

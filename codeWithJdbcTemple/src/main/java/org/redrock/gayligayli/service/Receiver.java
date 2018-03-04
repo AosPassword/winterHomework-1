@@ -1,6 +1,7 @@
 package org.redrock.gayligayli.service;
 
 import com.aliyuncs.exceptions.ClientException;
+import com.mysql.jdbc.log.LogUtils;
 import com.qiniu.util.Auth;
 import lombok.Data;
 import net.sf.json.JSONArray;
@@ -17,13 +18,14 @@ import org.redrock.gayligayli.service.videoInfo.util.VideoInfoUtil;
 import org.redrock.gayligayli.util.JsonUtil;
 import org.redrock.gayligayli.util.SecretUtil;
 import org.redrock.gayligayli.util.TimeUtil;
+import sun.rmi.runtime.Log;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
@@ -52,6 +54,7 @@ public class Receiver {
 
     private boolean isSignatureTrue() {
         String signature;
+        System.out.println(requestJson);
         if (requestJson != null) {
             if ((signature = requestJson.getString(SIGNATURE)) != null) {
                 Iterator it = requestJson.keys();
@@ -64,6 +67,8 @@ public class Receiver {
                     }
                     sb.append(requestJson.getString(key)).append(SIGNATURE_SEPARATOR);
                 }
+                System.out.println(sb.toString());
+                System.out.println(SecretUtil.encoderHs256(sb.toString()));
                 if (SecretUtil.isSecret(sb.toString(), signature)) {
                     if (TimeUtil.requestIsNotOvertime(requestJson.getString(TIMESTAMP), REQUEST_OVERTIME_SECOND)) {
                         return true;
@@ -151,20 +156,23 @@ public class Receiver {
                 String username = requestJson.getString(USERNAME);
                 String nickname = requestJson.getString(NICKNAME);
                 String password = requestJson.getString(PASSWORD);
-                if (!LoginUtil.hasUser(usernameType, username)) {
-                    UserDao.insertNewUser(nickname, SecretUtil.encoderHs256(password), username, usernameType);
-                    Token token = new Token();
-                    token.setSub(AUTHOR);
-                    token.setTime(TOKEN_OVERTIME_SECOND);
-                    token.setData(usernameType, username);
-                    responseJson.put(RESULT, SUCCESS);
-                    responseJson.put(JWT, token.getToken());
-                } else {
-                    responseJson.put(RESULT, USER_EXIST);
+                synchronized (Receiver.class) {
+                    if (!LoginUtil.hasUser(usernameType, username) && !LoginUtil.hasUser(NICKNAME, nickname)) {
+                        UserDao.insertNewUser(nickname, SecretUtil.encoderHs256(password), username, usernameType);
+                        Token token = new Token();
+                        token.setSub(AUTHOR);
+                        token.setTime(TOKEN_OVERTIME_SECOND);
+                        token.setData(usernameType, username);
+                        responseJson.put(RESULT, SUCCESS);
+                        responseJson.put(JWT, token.getToken());
+                    } else {
+                        responseJson.put(RESULT, USER_EXIST);
+                    }
                 }
             } else {
                 responseJson.put(RESULT, PARAMETER_ERROR);
             }
+
         } else {
             errorString();
         }
@@ -237,30 +245,30 @@ public class Receiver {
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-            JSONObject partitionJson = new JSONObject();
+                    JSONObject partitionJson = new JSONObject();
 
-            JSONArray partitionInfoJson = new JSONArray();
-            Set<Video> partitionInfoSet = VideoDao.getPartitionInfoSet((String) str);
-            for (Video video : partitionInfoSet) {
-                partitionInfoJson.element(video.toBriefString());
-            }
-            partitionJson.element(INFO, partitionInfoJson);
-            JSONArray partitionRankJson = new JSONArray();
-            ;
-            Set<Video> partitionRankSet = VideoDao.getPartitionRankSet((String) str, (long) Math.ceil(new Date().getTime() / 1000));
-            {
-                int i = 0;
-                for (Video video : partitionRankSet) {
-                    JSONObject tempJson;
-                    tempJson = new JSONObject();
-                    tempJson.element(RANK, ++i);
-                    tempJson.element(DATA, video.toRankString());
-                    partitionRankJson.element(tempJson.toString());
-                }
-            }
-            partitionJson.element(RANK, partitionRankJson);
+                    JSONArray partitionInfoJson = new JSONArray();
+                    Set<Video> partitionInfoSet = VideoDao.getPartitionInfoSet((String) str);
+                    for (Video video : partitionInfoSet) {
+                        partitionInfoJson.element(video.toBriefString());
+                    }
+                    partitionJson.element(INFO, partitionInfoJson);
+                    JSONArray partitionRankJson = new JSONArray();
+                    ;
+                    Set<Video> partitionRankSet = VideoDao.getPartitionRankSet((String) str, (long) Math.ceil(new Date().getTime() / 1000));
+                    {
+                        int i = 0;
+                        for (Video video : partitionRankSet) {
+                            JSONObject tempJson;
+                            tempJson = new JSONObject();
+                            tempJson.element(RANK, ++i);
+                            tempJson.element(DATA, video.toRankString());
+                            partitionRankJson.element(tempJson.toString());
+                        }
+                    }
+                    partitionJson.element(RANK, partitionRankJson);
 
-            responseJson.put(str, partitionJson);
+                    responseJson.put(str, partitionJson);
                 }
             });
         }
@@ -342,7 +350,6 @@ public class Receiver {
     public void uploadSuccess() {
         if (isSignatureTrue()) {
             if (requestJson.size() == 3) {
-
                 if (token.isToken()) {
                     if (token.isNotTokenOverTime()) {
                         int avId = requestJson.getInt(AV_ID);
@@ -401,7 +408,7 @@ public class Receiver {
                         if (LoginUtil.hasUser(NICKNAME, nickname)) {
                             int userId = UserDao.getUserid(NICKNAME, nickname);
                             if (VideoDao.getVideoId(ID, String.valueOf(videoId)) != -1) {
-                                if (UserDao.getCoin(userId) <= sendCoin) {
+                                if (UserDao.getCoin(userId) >= sendCoin) {
                                     UserDao.reduceCoin(sendCoin, userId);
                                     VideoDao.addCoin(sendCoin, videoId);
                                     responseJson.put(RESULT, SUCCESS);
@@ -540,4 +547,58 @@ public class Receiver {
             errorString();
         }
     }
+
+    public void search() {
+        //data page
+        if (isSignatureTrue()) {
+            if (requestJson.containsKey(DATA) && requestJson.containsKey(PAGE) && requestJson.size() == 4) {
+                String data = null;
+                try {
+                    data = new String(Base64.getDecoder().decode(requestJson.getString(DATA)),UTF8);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(data);
+                int page = requestJson.getInt(PAGE);
+                String limit = VideoInfoUtil.getPage(page);
+                String sql;
+                int flag;
+                Matcher matcher = Pattern.compile("(^av)\\d+").matcher(data);
+                if (matcher.matches() || LoginUtil.isNumeric(data)) {
+                    Matcher replaceMatcher = Pattern.compile("\\D+").matcher(data);
+                    data = replaceMatcher.replaceAll("");
+                    sql = "SELECT *,SUM(video.views+video.coin*70) AS temp FROM video WHERE av_id = ? GROUP BY id ORDER BY temp LIMIT " + limit;
+                } else if ((flag = VideoInfoUtil.isType(data)) != -1) {
+                    data = VideoInfoUtil.getType(flag);
+                    sql = "SELECT *,SUM(video.views+video.coin*70) AS temp FROM video WHERE type = ? GROUP BY id ORDER BY temp LIMIT " + limit;
+                } else {
+                    System.out.println("else");
+                    data="%"+data+"%";
+                    sql = "SELECT *,SUM(video.views+video.coin*70) AS temp FROM video WHERE name LIKE ? GROUP BY id ORDER BY temp LIMIT " + limit;
+                }
+                ArrayList<Video> videoList = VideoDao.searchVideo(sql, data);
+                if (videoList.size() != 0) {
+                    JSONArray jsonArray = new JSONArray();
+                    for (Video video:videoList) {
+                        jsonArray.element(video.toSearchString());
+                    }
+                    responseJson.element(RESULT,SUCCESS);
+                    responseJson.element(DATA,jsonArray.toString());
+                } else {
+                    responseJson.element(RESULT,DO_NOT_FIND_VIDEO);
+                }
+            } else {
+                    responseJson.element(RESULT,PARAMETER_ERROR);
+            }
+        } else {
+            errorString();
+        }
+    }
+
+    public static void main(String[] args) {
+        String data="donghua";
+        Matcher matcher = Pattern.compile("(^av)\\d+").matcher(data);
+        System.out.println(matcher.matches());
+    }
+
 }

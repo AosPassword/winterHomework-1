@@ -132,6 +132,10 @@ public class FinalStringUtil {
 
     public static final String CHILD_COMMENT="childComment";
 
+    public static final String PAGE="page";
+
+    public static final String AUTHOR_NAME="authorName";
+
     public static final String COMMENT_PID="pid";
     public static final String DO_NOT_FIND_COMMENT="doNotFindComment";
 

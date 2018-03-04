@@ -1,5 +1,6 @@
 package org.redrock.gayligayli.service.videoInfo.been;
 
+import lombok.Data;
 import net.sf.json.JSONObject;
 import org.redrock.gayligayli.Dao.UserDao;
 
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
+@Data
 public class Author {
     private int id;
     private String name;

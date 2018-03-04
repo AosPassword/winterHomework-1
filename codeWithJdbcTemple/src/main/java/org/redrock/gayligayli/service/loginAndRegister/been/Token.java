@@ -28,11 +28,13 @@ jti：JWT ID为web token提供唯一标识
 
     public Token() {
         playloadMap = new HashMap<>();
-        this.header = "eyd0eXAnOiAnSldUJywnYWxnJzogJ0hTMjU2J30=";
+        this.header = "eyJ0eXA6IkpXVCIsImFsZyI6IkhTMjU2In0=";
         this.playloadMap.put("iss", "Shiina");
     }
 
     public Token(String token) {
+        System.out.println("token: "+token);
+        if(token!=null){
         String[] tokens = token.split("\\.");
         if (tokens.length == 3) {
             this.playloadMap= new HashMap<>();
@@ -44,7 +46,7 @@ jti：JWT ID为web token提供唯一标识
                 playloadMap.put(key, jsonObject.getString(key));
             }
             this.signature = tokens[2];
-        }
+        }}
     }
 
     public Map<String, String> getPlayloadMap() {
@@ -85,8 +87,8 @@ jti：JWT ID为web token提供唯一标识
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (Map.Entry<String, String> entry : playloadMap.entrySet()) {
-            sb.append("'").append(entry.getKey()).append("':'")
-                    .append(entry.getValue()).append("',");
+            sb.append("\"").append(entry.getKey()).append("\":\"")
+                    .append(entry.getValue()).append("\",");
         }
         sb.delete(sb.length() - 1, sb.length());
         sb.append("}");
@@ -124,11 +126,9 @@ jti：JWT ID为web token提供唯一标识
 
 
     public static void main(String[] args) {
-        Map<String,String> playloadMap = new HashMap<>();
-        long time = 1000000000L;
-        long nowTime = (long) Math.ceil(new Date().getTime() / 1000);
-        playloadMap.put("nbf", String.valueOf(time));
-        playloadMap.put("iat", String.valueOf(nowTime));
-        playloadMap.put("exp", String.valueOf(nowTime + time));
+        Token token = new Token();
+        token.setData(TELEPHONE,"17347898530");
+        token.setTime(new Date().getTime());
+        System.out.println(token.getToken());
     }
 }

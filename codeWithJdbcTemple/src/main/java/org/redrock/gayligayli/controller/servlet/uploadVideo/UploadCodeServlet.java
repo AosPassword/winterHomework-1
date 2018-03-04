@@ -26,6 +26,7 @@ public class UploadCodeServlet extends HttpServlet {
         response.setHeader(HEADER_ONE,HEADER_TWO);
         String requestStr = JsonUtil.getJsonStr(request.getInputStream());
         String tokenStr = request.getHeader(JWT);
+        System.out.println(tokenStr);
 
         Receiver receiver = new Receiver(requestStr,new Token(tokenStr));
         Command command = new uploadCodeCommand(receiver);
