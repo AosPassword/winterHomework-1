@@ -242,34 +242,31 @@ public class Receiver {
         //各个分区
         ExecutorService executorService = Executors.newFixedThreadPool(14);
         for (Object str : partition) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject partitionJson = new JSONObject();
+            executorService.execute(() -> {
+                JSONObject partitionJson = new JSONObject();
 
-                    JSONArray partitionInfoJson = new JSONArray();
-                    Set<Video> partitionInfoSet = VideoDao.getPartitionInfoSet((String) str);
-                    for (Video video : partitionInfoSet) {
-                        partitionInfoJson.element(video.toBriefString());
-                    }
-                    partitionJson.element(INFO, partitionInfoJson);
-                    JSONArray partitionRankJson = new JSONArray();
-                    ;
-                    Set<Video> partitionRankSet = VideoDao.getPartitionRankSet((String) str, (long) Math.ceil(new Date().getTime() / 1000));
-                    {
-                        int i = 0;
-                        for (Video video : partitionRankSet) {
-                            JSONObject tempJson;
-                            tempJson = new JSONObject();
-                            tempJson.element(RANK, ++i);
-                            tempJson.element(DATA, video.toRankString());
-                            partitionRankJson.element(tempJson.toString());
-                        }
-                    }
-                    partitionJson.element(RANK, partitionRankJson);
-
-                    responseJson.put(str, partitionJson);
+                JSONArray partitionInfoJson = new JSONArray();
+                Set<Video> partitionInfoSet = VideoDao.getPartitionInfoSet((String) str);
+                for (Video video : partitionInfoSet) {
+                    partitionInfoJson.element(video.toBriefString());
                 }
+                partitionJson.element(INFO, partitionInfoJson);
+                JSONArray partitionRankJson = new JSONArray();
+                ;
+                Set<Video> partitionRankSet = VideoDao.getPartitionRankSet((String) str, (long) Math.ceil(new Date().getTime() / 1000));
+                {
+                    int i = 0;
+                    for (Video video : partitionRankSet) {
+                        JSONObject tempJson;
+                        tempJson = new JSONObject();
+                        tempJson.element(RANK, ++i);
+                        tempJson.element(DATA, video.toRankString());
+                        partitionRankJson.element(tempJson.toString());
+                    }
+                }
+                partitionJson.element(RANK, partitionRankJson);
+
+                responseJson.put(str, partitionJson);
             });
         }
         executorService.shutdown();
@@ -311,25 +308,36 @@ public class Receiver {
     public void uploadCode() {
 
         if (isSignatureTrue()) {
+            System.out.println(requestJson.size());
             if (requestJson.containsKey(NAME) && requestJson.containsKey(TYPE) && requestJson.containsKey(DESCRIPTION) &&
                     requestJson.containsKey(TIMESTAMP) && requestJson.containsKey(LENGTH) && requestJson.size() == 6) {
                 if (token.isToken()) {
                     if (token.isNotTokenOverTime()) {
-                        String name = requestJson.getString(NAME);
+                        String name = null;
+                        String description = null;
+                        name = requestJson.getString(NAME);
+                        description = requestJson.getString(DESCRIPTION);
                         String type = requestJson.getString(TYPE);
-                        String description = requestJson.getString(DESCRIPTION);
                         String time = requestJson.getString(TIMESTAMP);
                         String length = requestJson.getString(LENGTH);
                         String nickname = token.getNickname();
+                        String[] nameArray = name.split("\\.");
+                        String ends=nameArray[nameArray.length-1];
+                        System.out.println(nickname);
+                        System.out.println(UserDao.getUserid(NICKNAME, nickname));
                         int authorId;
                         if ((authorId = UserDao.getUserid(NICKNAME, nickname)) != -1) {
                             int avId = VideoDao.addVideo(name, authorId, type, description, time, length);
-                            String upToken;
-                            Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
-                            upToken = auth.uploadToken(BUCKET);
-                            responseJson.put(RESULT, SUCCESS);
-                            responseJson.put(AV_ID, avId);
-                            responseJson.put(UP_TOKEN, upToken);
+                            if (avId != -1) {
+                                String upToken;
+                                Auth auth = Auth.create(ACCESS_KEY, SECRET_KEY);
+                                upToken = auth.uploadToken(BUCKET, "video/" + avId+"."+ends);
+                                responseJson.put(RESULT, SUCCESS);
+                                responseJson.put(AV_ID, avId);
+                                responseJson.put(UP_TOKEN, upToken);
+                            } else {
+                                responseJson.put(RESULT,NAME_ERROR);
+                            }
                         } else {
                             responseJson.put(RESULT, DO_NOT_FIND_USER);
                         }
@@ -552,13 +560,7 @@ public class Receiver {
         //data page
         if (isSignatureTrue()) {
             if (requestJson.containsKey(DATA) && requestJson.containsKey(PAGE) && requestJson.size() == 4) {
-                String data = null;
-                try {
-                    data = new String(Base64.getDecoder().decode(requestJson.getString(DATA)),UTF8);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(data);
+                String data = requestJson.getString(DATA);
                 int page = requestJson.getInt(PAGE);
                 String limit = VideoInfoUtil.getPage(page);
                 String sql;
@@ -573,22 +575,22 @@ public class Receiver {
                     sql = "SELECT *,SUM(video.views+video.coin*70) AS temp FROM video WHERE type = ? GROUP BY id ORDER BY temp LIMIT " + limit;
                 } else {
                     System.out.println("else");
-                    data="%"+data+"%";
+                    data = "%" + data + "%";
                     sql = "SELECT *,SUM(video.views+video.coin*70) AS temp FROM video WHERE name LIKE ? GROUP BY id ORDER BY temp LIMIT " + limit;
                 }
                 ArrayList<Video> videoList = VideoDao.searchVideo(sql, data);
                 if (videoList.size() != 0) {
                     JSONArray jsonArray = new JSONArray();
-                    for (Video video:videoList) {
+                    for (Video video : videoList) {
                         jsonArray.element(video.toSearchString());
                     }
-                    responseJson.element(RESULT,SUCCESS);
-                    responseJson.element(DATA,jsonArray.toString());
+                    responseJson.element(RESULT, SUCCESS);
+                    responseJson.element(DATA, jsonArray.toString());
                 } else {
-                    responseJson.element(RESULT,DO_NOT_FIND_VIDEO);
+                    responseJson.element(RESULT, DO_NOT_FIND_VIDEO);
                 }
             } else {
-                    responseJson.element(RESULT,PARAMETER_ERROR);
+                responseJson.element(RESULT, PARAMETER_ERROR);
             }
         } else {
             errorString();
@@ -596,9 +598,10 @@ public class Receiver {
     }
 
     public static void main(String[] args) {
-        String data="donghua";
-        Matcher matcher = Pattern.compile("(^av)\\d+").matcher(data);
-        System.out.println(matcher.matches());
+        String data = "donghua.mp4";
+        String[] test = data.split("\\.");
+        System.out.println(test[test.length-1]);
+
     }
 
 }

@@ -32,6 +32,8 @@ public class FinalStringUtil {
     public static final String SCORE = "score";
     public static final long ONE_WEEK = 604800L;
 
+    public static final String NAME_ERROR="nameError";
+
     public static final String TEMP = "temp";
 
     public static final String BIG_VIP_DATA="big_vip";

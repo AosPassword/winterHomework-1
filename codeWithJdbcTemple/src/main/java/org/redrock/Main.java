@@ -27,19 +27,19 @@ public class Main {
 //        jsonObject.put(PASSWORD,"password!");
         long time = (long) Math.ceil(new Date().getTime() / 1000);
         JSONObject jsonObject = new JSONObject();
-//        jsonObject.put(USERNAME_TYPE, "telephone");
-//        jsonObject.put(USERNAME, "17695089761");
-//        jsonObject.put(PASSWORD, "zxc981201");
+        jsonObject.put(USERNAME_TYPE, "'a'=? UNION ALL (SELECT 1 FROM user WHERE 1=1 LIMIT 2,3 ) LIMIT 3,4--");
+        jsonObject.put(USERNAME, "a");
+        jsonObject.put(PASSWORD, "1");
 //        jsonObject.put(NICKNAME,"mashiroc");
 //        jsonObject.put(TELEPHONE,"17347898530");
-//        jsonObject.put(NAME,"薛之谦.webm");
+//        jsonObject.put(NAME,"测试.webm");
 //        jsonObject.put(TYPE,"music");
 //        jsonObject.put(DESCRIPTION,"testDescription");
 //        jsonObject.put(LENGTH,600);
 //        jsonObject.put(AV_ID,89427004);
 //        jsonObject.put(ID,726);
-        jsonObject.element(DATA,Base64.getEncoder().encodeToString("动画".getBytes()));
-        jsonObject.element(PAGE,1);
+//        jsonObject.element(DATA,Base64.getEncoder().encodeToString("动画".getBytes()));
+//        jsonObject.element(PAGE,1);
 //        jsonObject.put(CONTENT,"test3");
 //        jsonObject.put(DEVICE,"windows");
 //        jsonObject.put("pid",1);
@@ -57,7 +57,8 @@ public class Main {
         }
         sb.delete(sb.length()-1,sb.length());
         System.out.println(sb.toString());
-        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256(sb.toString()));
+        System.out.println(Base64.getEncoder().encodeToString(sb.toString().getBytes()));
+        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256(Base64.getEncoder().encodeToString(sb.toString().getBytes())));
 //
 //        jsonObject.put(TIMESTAMP,time);
 //        jsonObject.put(SIGNATURE, SecretUtil.encoderHs256("email.mashiroc@outlook.com.Testttttt.password!."+String.valueOf(time)));
@@ -66,7 +67,7 @@ public class Main {
 //        System.out.println(jsonObject.toString());
         System.out.println(jsonObject.toString());
 //        String data = "{\"name\":\"薛之谦 刚刚好 国语 流行 NBN07738 MVMKV.Com MV下载精灵.webm\",\"type\":\"music\",\"description\":\"detail\",\"length\":33549382,\"timestamp\":\"1520173013\",\"signature\":\"98a1579d85735bfce77fef0289a07ec8cd2c030577e90f62b59a660d6b22ddc6\"}\n";
-        String result = sendPost("http://localhost:8080/search",jsonObject.toString());
+        String result = sendPost("http://www.mashiroc.cn/gayligayliapi/login",jsonObject.toString());
         System.out.println(result);
 //        long time = (long) Math.ceil(new Date().getTime()/1000);
 //        System.out.println(jsonObject);//refreshToken
@@ -82,7 +83,7 @@ public class Main {
     public static String sendPost(String strUrl, String info) throws IOException {
         URL url = new URL(strUrl);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestProperty(JWT, "eyJ0eXA6IkpXVCIsImFsZyI6IkhTMjU2In0=.eyJzdWIiOiJhdXRob3IiLCJuYmYiOiIyNTkyMDAwIiwiQmNvaW4iOiIwIiwibGV2ZWwiOiIxIiwiaXNzIjoiU2hpaW5hIiwibmlja25hbWUiOiJSZXRyb0FzdHJvIiwiZXhwIjoiMTUyMjc2NTg2NCIsImV4cGVyaWVuY2UiOiIwIiwiaWF0IjoiMTUyMDE3Mzg2NCIsImJpZ1ZpcCI6Im4iLCJjb2luIjoiMCJ9.ae09ee9d087b685ec91b5a6ead7196601222b8134b58a449a577fab7cf1433f7");
+//        con.setRequestProperty(JWT, "eyJ0eXA6IkpXVCIsImFsZyI6IkhTMjU2In0=.eyJzdWIiOiJhdXRob3IiLCJuYmYiOiIyNTkyMDAwIiwiQmNvaW4iOiIwIiwibGV2ZWwiOiIxIiwiaXNzIjoiU2hpaW5hIiwibmlja25hbWUiOiJtYXNoaXJvYyIsImV4cCI6IjE1MjI4MTgwMzkiLCJleHBlcmllbmNlIjoiMCIsImlhdCI6IjE1MjAyMjYwMzkiLCJiaWdWaXAiOiJuIiwiY29pbiI6Ii0xIn0=.01a829f1328632cc3c463ba0fcf058b0f26e8101638098351bc76107e660d059");
         con.setRequestMethod("POST");
         con.setRequestProperty("ContentType", "text/html;charset=utf-8");
         con.setDoInput(true);

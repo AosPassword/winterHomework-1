@@ -335,7 +335,7 @@ public class VideoDao extends Dao {
     public static int addVideo(String name, int authorId, String type, String description, String time, String length) {
         int avId = VideoInfoUtil.getAvid();
         String names[] = name.split("\\.");
-        if (names.length == 2) {
+        if (names.length >= 2) {
             String photoUrl = VideoInfoUtil.getPhotoUrl(avId, names[1]);
             String videoUrl = VideoInfoUtil.getVideoUrl(avId, names[1]);
 

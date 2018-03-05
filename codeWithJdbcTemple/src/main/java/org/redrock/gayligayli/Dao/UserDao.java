@@ -62,6 +62,7 @@ public class UserDao extends Dao {
 
         String sql = "SELECT id FROM user WHERE " + usernameType + " = ?";
         List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,new Object[]{username});
+        System.out.println(list);
         if(list.size()!=0){
             return (int)list.get(0).get(ID);
         } else {

@@ -14,6 +14,7 @@ public class LoginUtil {
             String passwordSecret = UserDao.getUserPass(username, usernameType);
             password = SecretUtil.encoderHs256(password);
             if (password.equals(passwordSecret)) {
+                System.out.println("passwordYes");
                 return true;
             }
         }

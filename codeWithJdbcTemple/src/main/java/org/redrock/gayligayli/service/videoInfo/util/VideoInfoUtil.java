@@ -56,7 +56,7 @@ public class VideoInfoUtil {
     ;
 
     public static String getType(int flag) {
-        return partition[flag];
+        return partition [flag];
     }
 
     public static String getPage(int page) {

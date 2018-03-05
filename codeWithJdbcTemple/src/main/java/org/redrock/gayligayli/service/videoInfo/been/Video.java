@@ -109,6 +109,7 @@ public class Video implements Comparable {
         jsonObject.put(VIEWS,views);
         jsonObject.put(LENGTH,length);
         jsonObject.put(TIME,time);
+        jsonObject.put(AUTHOR_ID,author.getId());
         jsonObject.put(AUTHOR_NAME,author.getName());
         jsonObject.put(PHOTO_URL,photoUrl);
         return  jsonObject.toString();

@@ -3,15 +3,26 @@ package org.redrock.gayligayli.util;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+import static org.redrock.gayligayli.util.FinalStringUtil.UTF8;
 
 public class SecretUtil {
     private static final String SECRET = "mashiroc";
     private static final String INSTANCE="HmacSHA256";
 
     public static boolean isSecret(String data, String signature) {
-        return encoderHs256(data).equals(signature);
+        String base = null;
+        try {
+            base = new String(Base64.getEncoder().encode(data.getBytes("UTF-8")),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(base);
+        return encoderHs256(base).equals(signature);
     }
 
     public static String encoderHs256(String message) {
