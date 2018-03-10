@@ -38,7 +38,7 @@
 
 ------
 
-### 接口概述
+### 接口文档
 
 1. 登陆相关
 
@@ -46,7 +46,7 @@
 
    - 登陆
 
-     请求为一个JSON串，使用post请求 <http://www.mashiroc.cn/gayligayliapi/login>
+     请求为post请求 <http://www.mashiroc.cn/gayligayliapi/login>
 
      ```json
      {
@@ -63,8 +63,8 @@
       	"timestamp":<timestamp>,
       	
          /*
-         签名，需要按照顺序使用"."拼接value，
-         然后使用HmacSHA-256加密，如本请求的签名为：
+         签名，需要按照顺序使用"."拼接value，然后使用base64编码
+         最后使用HmacSHA-256加密，如本请求的签名为：
          <usernameType>.<username>.<password>.<timestamp>
          */
          "signature":<signature>
@@ -93,9 +93,9 @@
 
      ​
 
-   - 刷新token <http://www.mashiroc.cn/gayligayliapi/refreshToken>
+   - 刷新token <http://www.mashiroc.cn/gayligayliapi/refreshToken
 
-     请求为一个JSON串，使用post请求
+     请求为post请求
 
      ```json
      {
@@ -104,7 +104,7 @@
      }
      ```
 
-     *注：需要将一个jwt附在请求的header上*
+     *注：所有和用户登录后有关的操作都需要将一个JWT附在请求的header上*
 
      响应为一个JSON串
 
@@ -121,7 +121,7 @@
 
    - 检查用户名是否存在 <http://www.mashiroc.cn/gayligayliapi/isUserHas>
 
-     请求为一个get请求，需要两个参数
+     请求为get请求，需要两个参数
 
      ```
      usernameType=<usernameType>
@@ -145,7 +145,7 @@
 
    - 注册 <http://www.mashiroc.cn/gayligayliapi/register>
 
-     请求为一个JSON串，使用post请求
+     请求为post请求
 
      ```json
      {
@@ -169,7 +169,7 @@
 
      ​
 
-   - 发送验证码 <http://www.mashiroc.cn/gayligayliapi/verificationCode>
+   - 发送验证码 <http://www.mashiroc.cn/gayligayliapi/verificationCode
 
      请求为一个JSON串，使用post请求
 
@@ -305,7 +305,7 @@
 
    - 拉取 <http://www.mashiroc.cn/gayligayliapi/videoPage>
 
-     请求为一个JSON串 post请求
+     请求为post请求
 
      ```json
      {
@@ -371,13 +371,7 @@
 
    2.3 上传视频
 
-   - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/uploadToken>
-
-     上传到七牛云时需要把视频的名字改为得到的av号
-
-     上传url:http://p3qhkqnrm.bkt.clouddn.com/video/
-
-     //这里我也不知道要不要加video 是传到域名video文件夹下 似乎是要把文件名改成video/123455.mp4这样子上传到去掉video的url
+   - 获得上传凭证 <http://www.mashiroc.cn/gayligayliapi/uploadToken
 
      请求为一个JSON串 post请求
 
@@ -392,11 +386,9 @@
      }
      ```
 
-   - 视频上传成功通知 <http://www.mashiroc.cn/gayligayliapi/uploadSuccess>
+   - 视频上传成功通知  <http://www.mashiroc.cn/gayligayliapi/uploadSuccess
 
-     在没有回调的情况下使用这个
-
-     请求为一个JSON串
+     请求为post请求
 
      ```json
      {
@@ -412,7 +404,7 @@
 
    3.1 投硬币 http://www.mashiroc.cn/gayligayliapi/sendCoin
 
-   请求为一个JSON串 post请求
+   请求为post请求
 
    ```json
    {
@@ -476,13 +468,14 @@
 
    3.4 发送评论
 
-   请求为一个JSON串 post请求 http://www.mashiroc.cn/gayligayliapi/sendComment
+   请求为post请求 http://www.mashiroc.cn/gayligayliapi/sendComment
 
    ```json
    {
      "videoId":<videoId>,
      "content":<content>,//弹幕的具体内容
      "appearTime":<appearTime>,//弹幕要出现的时间的秒数
+     "device":<device>,//发送评论用的设备 例如 ： iphone20
      "color":<color>,//弹幕的颜色
      "fontsize":<fontsize>,//弹幕的字号
      "position":<position>,//弹幕的位置，0为滚动，-1为下面，1为上面
@@ -501,7 +494,7 @@
 
    3.5 搜索 http://www.mashiroc.cn/gayligayliapi/search
 
-   请求为一个JSON串 post请求 
+   请求为post请求 
 
    ```json
    {
@@ -517,6 +510,7 @@
    ```json
    {
      "result":"success",
+     "page":2,//总共有多少页
      "data":[//最多有二十个
        ···
        {"id":464,
@@ -530,7 +524,6 @@
      	···
      ]
    }
-
    ```
 
    ​
@@ -539,14 +532,45 @@
 
    4.1 拉取个人信息
 
-   4.4 拉取收藏
+   请求为post请求 http://www.mashiroc.cn/gayligayliapi/userInfo
+
+   ```json
+   {
+       "id":<id>//用户id
+     	"timestamp":<timestamp>
+     	"signature":<signature>
+   }
+   ```
+
+   ​
 
 5. 用户和视频管理相关
 
-   5.1 修改密码
+   5.1 修改密码 http://www.mashiroc.cn/gayligayliapi/replacePassword
 
-   5.2 上传头像
+   ```json
+   {
+       "oldPassword":<oldPassword>,//旧密码
+     	"newPassword":<newPassword>,//新密码
+     	"timestamp":<timestamp>,
+     	"signature":<signature>
+   }
+   ```
 
-   5.3 设置用户信息
+   ​
 
-   5.4 设置视频信息
+   5.2 上传头像 http://www.mashiroc.cn/gayligayliapi/replacePhoto
+
+   ```json
+   {
+       "photoUrl":<photoUrl>,
+     	"timestamp":<timestamp>,
+     	"signature":<signature>
+   }
+   ```
+
+   ​
+
+6. 管理界面
+
+http://www.mashiroc.cn/gayligayliapi/gayligayliapi/guojiaduiwotmchuibao.html

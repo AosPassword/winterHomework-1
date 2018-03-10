@@ -3,24 +3,37 @@ package org.redrock.gayligayli.util;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Base64;
+
+import static org.redrock.gayligayli.util.FinalStringUtil.UTF8;
 
 public class SecretUtil {
     private static final String SECRET = "mashiroc";
     private static final String INSTANCE="HmacSHA256";
 
     public static boolean isSecret(String data, String signature) {
-        return encoderHs256(data).equals(signature);
+        String base = null;
+        try {
+            System.out.println("data " +data);
+            base = new String(Base64.getEncoder().encode(data.getBytes("UTF-8")),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println("si "+base);
+        return encoderHs256(base).equals(signature);
     }
 
     public static String encoderHs256(String message) {
-        String hash = "";
+        String hash = null;
         try {
-            Mac sha256_HMAC = Mac.getInstance(INSTANCE);
-            SecretKeySpec secret_key = new SecretKeySpec(SECRET.getBytes(), INSTANCE);
-            sha256_HMAC.init(secret_key);
-            byte[] bytes = sha256_HMAC.doFinal(message.getBytes());
+            Mac sha256Hmac = Mac.getInstance(INSTANCE);
+            SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), INSTANCE);
+            sha256Hmac.init(secretKey);
+            byte[] bytes = sha256Hmac.doFinal(message.getBytes(UTF8));
             StringBuilder hs = new StringBuilder();
             String stmp;
             for (int n = 0; bytes!=null && n < bytes.length; n++) {
@@ -36,4 +49,9 @@ public class SecretUtil {
         return hash;
     }
 
+    public static void main(String[] args) {
+        String str = "测试aaa";
+        String a = Base64.getEncoder().encodeToString(str.getBytes());
+        System.out.println(new String(Base64.getDecoder().decode(a)));
+    }
 }

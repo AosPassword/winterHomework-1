@@ -29,13 +29,7 @@ public class HomePageServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        JSONArray jsonArray = JSONArray.fromObject(partition);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(CONTENT, jsonArray);
-
-        Receiver receiver = new Receiver(jsonObject.toString());
+        Receiver receiver = new Receiver();
         Command command = new HomePageCommand(receiver);
         command.exectue();
 

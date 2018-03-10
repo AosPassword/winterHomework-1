@@ -1,7 +1,7 @@
 package org.redrock.gayligayli.controller.servlet.loginAndRegister;
 
 import net.sf.json.JSONObject;
-import org.redrock.gayligayli.service.loginAndRegister.util.LoginUtil;
+import org.redrock.gayligayli.util.LoginUtil;
 import org.redrock.gayligayli.util.JsonUtil;
 
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +16,6 @@ import static org.redrock.gayligayli.util.FinalStringUtil.*;
 public class UserHasServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
         String usernameType = request.getParameter(USERNAME_TYPE);
         String username = request.getParameter(USERNAME);
         JSONObject jsonObject = new JSONObject();

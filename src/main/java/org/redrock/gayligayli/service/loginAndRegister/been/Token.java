@@ -24,25 +24,35 @@ jti：JWT ID为web token提供唯一标识
     private String header;
     private Map<String, String> playloadMap;
     private String playloadStr;
+    private String base64Playload;
     private String signature;
 
     public Token() {
         playloadMap = new HashMap<>();
-        this.header = "eyd0eXAnOiAnSldUJywnYWxnJzogJ0hTMjU2J30=";
+        this.header = "eyJ0eXA6IkpXVCIsImFsZyI6IkhTMjU2In0=";
         this.playloadMap.put("iss", "Shiina");
     }
 
     public Token(String token) {
-        String[] tokens = token.split(".");
-        if (tokens.length == 3) {
-            this.header = tokens[0];
-            this.playloadStr = tokens[1];
-            JSONObject jsonObject = JSONObject.fromObject(tokens[1]);
-            Set<String> set = jsonObject.keySet();
-            for (String key : set) {
-                playloadMap.put(key, jsonObject.getString(key));
+        System.out.println(token);
+        if (token != null) {
+            String[] tokens = token.split("\\.");
+            if (tokens.length == 3) {
+                this.playloadMap = new HashMap<>();
+                this.header = tokens[0];
+                this.base64Playload=tokens[1];
+                try {
+                    this.playloadStr = new String(Base64.getDecoder().decode(tokens[1]), UTF8);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                JSONObject jsonObject = JSONObject.fromObject(this.playloadStr);
+                Set<String> set = jsonObject.keySet();
+                for (String key : set) {
+                    playloadMap.put(key, jsonObject.getString(key));
+                }
+                this.signature = tokens[2];
             }
-            this.signature = tokens[2];
         }
     }
 
@@ -62,7 +72,7 @@ jti：JWT ID为web token提供唯一标识
 }*/
 
     public void setData(String usernameType, String username) {
-        Map<String, String> userInfo = UserDao.getUserInfo(username, usernameType);
+        Map<String, String> userInfo = UserDao.getUserInfo(usernameType, username);
         for (Map.Entry<String, String> entry : userInfo.entrySet()) {
             this.playloadMap.put(entry.getKey(), entry.getValue());
         }
@@ -74,18 +84,18 @@ jti：JWT ID为web token提供唯一标识
 
     //time是过期的秒数
     public void setTime(long time) {
-        long nowTime = new Date().getTime() / 1000;
-        playloadMap.put("nbf", String.valueOf(Math.ceil(nowTime)));
+        long nowTime = (long) Math.ceil(new Date().getTime() / 1000);
+        playloadMap.put("nbf", String.valueOf(time));
         playloadMap.put("iat", String.valueOf(nowTime));
-        playloadMap.put("exp", String.valueOf(Math.ceil(nowTime + time)));
+        playloadMap.put("exp", String.valueOf(nowTime + time));
     }
 
     public String getToken() {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (Map.Entry<String, String> entry : playloadMap.entrySet()) {
-            sb.append("'").append(entry.getKey()).append("':'")
-                    .append(entry.getValue()).append("',");
+            sb.append("\"").append(entry.getKey()).append("\":\"")
+                    .append(entry.getValue()).append("\",");
         }
         sb.delete(sb.length() - 1, sb.length());
         sb.append("}");
@@ -106,8 +116,10 @@ jti：JWT ID为web token提供唯一标识
 
     public boolean isToken() {
         if (this.header != null && this.playloadStr != null && this.signature != null) {
-            String userSignature = SecretUtil.encoderHs256(header + "." + playloadStr);
-            if (this.signature.equals(userSignature)&&playloadMap.size()==11) {
+            String data = header+"."+base64Playload;
+            System.out.println(data);
+            System.out.println(SecretUtil.encoderHs256(data));
+            if (SecretUtil.encoderHs256(data).equals(this.signature) && playloadMap.size() == 11) {
                 return true;
             }
         }
@@ -124,8 +136,8 @@ jti：JWT ID为web token提供唯一标识
 
     public static void main(String[] args) {
         Token token = new Token();
-        token.setSub("author");
-        token.setTime(10000L);
+        token.setData(TELEPHONE, "17347898530");
+        token.setTime(new Date().getTime());
         System.out.println(token.getToken());
     }
 }

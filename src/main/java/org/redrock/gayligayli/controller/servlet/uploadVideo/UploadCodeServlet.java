@@ -3,6 +3,7 @@ package org.redrock.gayligayli.controller.servlet.uploadVideo;
 
 import org.redrock.gayligayli.service.Command;
 import org.redrock.gayligayli.service.Receiver;
+import org.redrock.gayligayli.service.loginAndRegister.been.Token;
 import org.redrock.gayligayli.service.videoUpload.command.uploadCodeCommand;
 import org.redrock.gayligayli.util.JsonUtil;
 
@@ -20,11 +21,9 @@ public class UploadCodeServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        String requestStr = JsonUtil.getJsonStr(request.getInputStream());
-
-        Receiver receiver = new Receiver(requestStr);
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
+        Token token = (Token) request.getAttribute(JWT);
+        receiver.setToken(token);
         Command command = new uploadCodeCommand(receiver);
         command.exectue();
 

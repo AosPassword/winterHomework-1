@@ -6,7 +6,60 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
+    <session-config>
+        <session-timeout>30</session-timeout>           <!-- 单位为分钟，例如30分钟 -->
+    </session-config>
 
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>org.redrock.gayligayli.manage.ManageLoginFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>/meirenxingmeitianli.jsp</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>signatureFilter</filter-name>
+        <filter-class>org.redrock.gayligayli.controller.filter.SignatureFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>tokenFilter</filter-name>
+        <filter-class>org.redrock.gayligayli.controller.filter.TokenFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>tokenFilter</filter-name>
+        <url-pattern>/refreshToken</url-pattern>
+        <url-pattern>/uploadToken</url-pattern>
+        <url-pattern>/uploadSuccess</url-pattern>
+        <url-pattern>/sendCoin</url-pattern>
+        <url-pattern>/collection</url-pattern>
+        <url-pattern>/sendBarrage</url-pattern>
+        <url-pattern>/sendComment</url-pattern>
+        <url-pattern>/replacePassword</url-pattern>
+        <url-pattern>/replacePhoto</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>signatureFilter</filter-name>
+        <url-pattern>/login</url-pattern>
+        <url-pattern>/refreshToken</url-pattern>
+        <url-pattern>/register</url-pattern>
+        <url-pattern>/verificationCode</url-pattern>
+        <url-pattern>/uploadToken</url-pattern>
+        <url-pattern>/search</url-pattern>
+        <url-pattern>/videoPage</url-pattern>
+        <url-pattern>/uploadSuccess</url-pattern>
+        <url-pattern>/sendCoin</url-pattern>
+        <url-pattern>/collection</url-pattern>
+        <url-pattern>/sendBarrage</url-pattern>
+        <url-pattern>/sendComment</url-pattern>
+        <url-pattern>/replacePassword</url-pattern>
+        <url-pattern>/replacePhoto</url-pattern>
+    </filter-mapping>
 
 </web-app>
         

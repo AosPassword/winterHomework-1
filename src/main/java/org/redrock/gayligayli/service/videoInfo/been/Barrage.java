@@ -5,6 +5,7 @@ import net.sf.json.JSONObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
@@ -20,26 +21,27 @@ public class Barrage {
     private String appearTime;
     private int fontSize;
 
-    public Barrage(){}
+    public Barrage() {
+    }
 
-    public Barrage(ResultSet resultSet) throws SQLException {
-        content=resultSet.getString(CONTENT);
-        sendTime =resultSet.getString(SEND_TIME_DATA);
-        fontSize=resultSet.getInt(FONTSIZE);
-        authorId=resultSet.getInt(AUTHOR_ID_DATA);
-        color=resultSet.getString(COLOR);
-        position=resultSet.getInt(POSITION);
-        appearTime =resultSet.getString(APPEAR_TIME_DATA);
+    public Barrage(Map<String, Object> map) {
+        content = (String) map.get(CONTENT);
+        sendTime = (String) map.get(SEND_TIME_DATA);
+        fontSize = (int) map.get(FONTSIZE);
+        authorId = (int) map.get(AUTHOR_ID_DATA);
+        color = (String) map.get(COLOR);
+        position = (int) map.get(POSITION);
+        appearTime = (String) map.get(APPEAR_TIME_DATA);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(CONTENT,content);
+        jsonObject.put(CONTENT, content);
         jsonObject.put(SEND_TIME, sendTime);
-        jsonObject.put(AUTHOR_ID,authorId);
-        jsonObject.put(COLOR,color);
-        jsonObject.put(POSITION,position);
+        jsonObject.put(AUTHOR_ID, authorId);
+        jsonObject.put(COLOR, color);
+        jsonObject.put(POSITION, position);
         jsonObject.put(APPEAR_TIME, appearTime);
         return jsonObject.toString();
     }

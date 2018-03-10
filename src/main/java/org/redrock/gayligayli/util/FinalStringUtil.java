@@ -1,5 +1,8 @@
 package org.redrock.gayligayli.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class FinalStringUtil {
     public static final String CONTENT = "content";
     public static final String TIME = "time";
@@ -17,6 +20,7 @@ public class FinalStringUtil {
     public static final String CHILD_TYPE = "childType";
     public static final String CHILD_TYPE_DATA = "child_type";
     public static final String AV_ID = "avId";
+    public static final String AV_ID_DATA="av_id";
     public static final String DESCRIPTION = "description";
     public static final String LENGTH = "length";
     public static final String VIEWS = "views";
@@ -31,7 +35,15 @@ public class FinalStringUtil {
     public static final String SCORE = "score";
     public static final long ONE_WEEK = 604800L;
 
+    public static final String NAME_ERROR="nameError";
+
     public static final String TEMP = "temp";
+
+    public static final String BIG_VIP_DATA="big_vip";
+    public static final String B_COIN_DATA="b_coin";
+
+    public static final String HEADER_ONE="Access-Control-Allow-Origin";
+    public static final String HEADER_TWO="*";
 
     public static final String CARTOON = "cartoon";
     public static final String ANIME = "anime";
@@ -52,6 +64,18 @@ public class FinalStringUtil {
     public static final String DEVICE = "device";
     public static final String PRAISE = "praise";
 
+    public static final String OLD_PASSWORD="oldPassword";
+    public static final String NEW_PASSWORD="newPassword";
+
+    public static final String USER_INFO = "userInfo";
+
+    public static final String RECEIVE = "receive";
+
+    public static final String[] partition =
+            {CARTOON, ANIME, CREATED_BY_NATIVE, MUSIC, DANCE,
+                    GAME, SCIENCE, LIFE, AUTOTUNE_REMIX, FASHION,
+                    ADVERTISEMENT, ENTERTAINMENT, MOVIES, SCREENING_HALL};
+
     public static final String USERNAME_TYPE = "usernameType";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
@@ -59,8 +83,8 @@ public class FinalStringUtil {
     public static final String SIGNATURE = "signature";
 
     public final static int TOKEN_OVERTIME_SECOND = 2592000;
-    //TODO:测试的过期时间增加了一倍
-    public final static int REQUEST_OVERTIME_SECOND = 6000;
+    //TODO:测试的Token和request过期时间增加了一倍
+    public final static int REQUEST_OVERTIME_SECOND = 600;
 
     public static final String AUTHOR = "author";
     public static final String RESULT = "result";
@@ -80,7 +104,8 @@ public class FinalStringUtil {
     public static final String B_COIN = "Bcoin";
     public static final String EXPERIENCE = "experience";
     public static final String LEVEL = "level";
-    public static final String N_STR = "N";
+    public static final String N_STR = "n";
+    public static final String Y_STR="y";
 
     public static final String SIGNATURE_SEPARATOR = ".";
     public static final String USER_EXIST = "userExist";
@@ -119,11 +144,27 @@ public class FinalStringUtil {
     public static final String SEND_COIN="sendCoin";
     public static final String NOT_ENOUGH_COIN="notEnoughCoin";
     public static final String VIDEO_ID="videoId";
+    public static final String VIDEO_ID_DATA="video_id";
     public static final String USER_ID="userID";
+
+    public static final String CHILD_COMMENT="childComment";
+
+    public static final String PAGE="page";
+
+    public static final String AUTHOR_NAME="authorName";
 
     public static final String COMMENT_PID="pid";
     public static final String DO_NOT_FIND_COMMENT="doNotFindComment";
 
     public static final String INIT_DESCRIPTION="没有描述~";
+
+    public static final String PARAMETER_ERROR="parameterError";
+
+    public static final String IDK="idk";
+
+    public static final String ACTION="action";
+
+    public static final String ADD="add";
+    public static final String CANCEL="cancel";
 
 }
