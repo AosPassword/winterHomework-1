@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import static org.redrock.gayligayli.spider.Main.sendGet;
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
-import static org.redrock.gayligayli.util.FinalStringUtil.SCREENING_HALL;
 
 @WebServlet(name = "SpiderServlet",urlPatterns = "/spider")
 public class SpiderServlet extends HttpServlet {
@@ -34,10 +33,7 @@ doPost(request,response);
     }
 
     private static void spider(){
-        String[] partition =
-                {CARTOON, ANIME, CREATED_BY_NATIVE, MUSIC, DANCE,
-                        GAME, SCIENCE, LIFE, AUTOTUNE_REMIX, FASHION,
-                        ADVERTISEMENT, ENTERTAINMENT, MOVIES, SCREENING_HALL};
+
 
         String[] apiUrl = new String[14];
         //动画

@@ -16,9 +16,6 @@ import static org.redrock.gayligayli.util.FinalStringUtil.*;
 public class UserHasServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
         String usernameType = request.getParameter(USERNAME_TYPE);
         String username = request.getParameter(USERNAME);
         JSONObject jsonObject = new JSONObject();

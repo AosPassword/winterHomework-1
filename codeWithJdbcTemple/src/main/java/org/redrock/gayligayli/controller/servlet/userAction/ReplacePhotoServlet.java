@@ -3,7 +3,7 @@ package org.redrock.gayligayli.controller.servlet.userAction;
 import org.redrock.gayligayli.service.Command;
 import org.redrock.gayligayli.service.Receiver;
 import org.redrock.gayligayli.service.loginAndRegister.been.Token;
-import org.redrock.gayligayli.service.userAction.command.AddCollectionCommand;
+import org.redrock.gayligayli.service.userAction.command.ReplacePhotoCommand;
 import org.redrock.gayligayli.util.JsonUtil;
 
 import javax.servlet.ServletException;
@@ -15,17 +15,14 @@ import java.io.IOException;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
-@WebServlet(name = "AddCollectionServlet", urlPatterns = "/addCollection")
-public class AddCollectionServlet extends HttpServlet {
+@WebServlet(name = "ReplacePhotoServlet", urlPatterns = "/replacePhoto")
+public class ReplacePhotoServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-        String requestJson = JsonUtil.getJsonStr(request.getInputStream());
-        String tokenStr=request.getHeader(JWT);
 
-        Receiver receiver = new Receiver(requestJson,new Token(tokenStr));
-        Command command = new AddCollectionCommand(receiver);
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
+        Token token = (Token) request.getAttribute(JWT);
+        receiver.setToken(token);
+        Command command = new ReplacePhotoCommand(receiver);
         command.exectue();
 
         JsonUtil.writeResponse(response, command.getResponseJson());

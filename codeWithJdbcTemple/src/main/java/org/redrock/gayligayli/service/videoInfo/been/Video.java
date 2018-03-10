@@ -31,10 +31,10 @@ public class Video implements Comparable {
     public Video() {
     }
 
-    public Video(Map<String,Object> map){
+    public Video(Map<String, Object> map) {
         this.setId((Integer) map.get(ID));
         this.setAvId((Integer) map.get(AV_ID_DATA));
-        this.setName((String)map.get(NAME));
+        this.setName((String) map.get(NAME));
         this.setType((String) map.get(TYPE));
         this.setChildType((Integer) map.get(CHILD_TYPE_DATA));
         this.setDescription((String) map.get(DESCRIPTION));
@@ -102,17 +102,17 @@ public class Video implements Comparable {
         return jsonObject.toString();
     }
 
-    public String toSearchString(){
+    public String toSearchString() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(ID,id);
-        jsonObject.put(NAME,name);
-        jsonObject.put(VIEWS,views);
-        jsonObject.put(LENGTH,length);
-        jsonObject.put(TIME,time);
-        jsonObject.put(AUTHOR_ID,author.getId());
-        jsonObject.put(AUTHOR_NAME,author.getName());
-        jsonObject.put(PHOTO_URL,photoUrl);
-        return  jsonObject.toString();
+        jsonObject.put(ID, id);
+        jsonObject.put(NAME, name);
+        jsonObject.put(VIEWS, views);
+        jsonObject.put(LENGTH, length);
+        jsonObject.put(TIME, time);
+        jsonObject.put(AUTHOR_ID, author.getId());
+        jsonObject.put(AUTHOR_NAME, author.getName());
+        jsonObject.put(PHOTO_URL, photoUrl);
+        return jsonObject.toString();
     }
 
     public String toBriefString() {
@@ -150,7 +150,7 @@ public class Video implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-            Video video = (Video) o;
-            return this.id-video.getId();
+        Video video = (Video) o;
+        return this.id - video.getId();
     }
 }

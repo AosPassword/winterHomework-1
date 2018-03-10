@@ -36,6 +36,7 @@ public class UserDao extends Dao {
      * @return 用户的信息Map
      */
     public static Map<String, String> getUserInfo(String usernameType, String username) {
+        System.out.println(username);
 
         String sql = "SELECT nickname,big_vip,coin,b_coin,experience,level FROM user WHERE " + usernameType + " = ? LIMIT 1";
         Map<String, Object> map = jdbcTemplate.queryForMap(sql, username);
@@ -45,7 +46,7 @@ public class UserDao extends Dao {
         info.put(COIN, String.valueOf((int) map.get(COIN)));
         info.put(B_COIN, String.valueOf((int) map.get(B_COIN_DATA)));
         info.put(EXPERIENCE, String.valueOf((int) map.get(EXPERIENCE)));
-        info.put(LEVEL, String.valueOf((int)  map.get(LEVEL)));
+        info.put(LEVEL, String.valueOf((int) map.get(LEVEL)));
 
         return info;
 
@@ -61,10 +62,11 @@ public class UserDao extends Dao {
     public static int getUserid(String usernameType, String username) {
 
         String sql = "SELECT id FROM user WHERE " + usernameType + " = ?";
-        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,new Object[]{username});
+        System.out.println(sql);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, new Object[]{username});
         System.out.println(list);
-        if(list.size()!=0){
-            return (int)list.get(0).get(ID);
+        if (list.size() != 0) {
+            return (int) list.get(0).get(ID);
         } else {
             return -1;
         }
@@ -98,10 +100,10 @@ public class UserDao extends Dao {
      */
     public static String getUserNickname(int id) {
         String sql = "SELECT nickname FROM user WHERE id = ?";
-        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,id);
-        if(list.size()==0){
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql, id);
+        if (list.size() == 0) {
             return null;
-        }else {
+        } else {
             return (String) list.get(0).get(NICKNAME);
         }
 //        Connection connection = null;
@@ -139,7 +141,7 @@ public class UserDao extends Dao {
 
         String password;
         String sql = "SELECT password FROM user WHERE " + usernameType + " = ?";
-        password=jdbcTemplate.queryForObject(sql,new Object[]{username},String.class);
+        password = jdbcTemplate.queryForObject(sql, new Object[]{username}, String.class);
 
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
@@ -183,7 +185,7 @@ public class UserDao extends Dao {
 
 //        try {
 
-        jdbcTemplate.update(sql,nickname,username,password,initPhotoUrl,N_STR,0,0,0,1,INIT_DESCRIPTION);
+        jdbcTemplate.update(sql, nickname, username, password, initPhotoUrl, N_STR, 0, 0, 0, 1, INIT_DESCRIPTION);
 
 //            connection = JdbcUtil.getConnection();
 //            preparedStatement = connection.prepareStatement(sql);
@@ -215,7 +217,7 @@ public class UserDao extends Dao {
     public static void uploadSuccess(int avId) {
 
         String sql = "UPDATE video SET success = 'y' WHERE av_id = ?";
-        jdbcTemplate.update(sql,avId);
+        jdbcTemplate.update(sql, avId);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
 //
@@ -238,8 +240,8 @@ public class UserDao extends Dao {
     public static int getCoin(int userId) {
 
         String sql = "SELECT coin FROM user WHERE id = ?";
-        Integer coin = jdbcTemplate.queryForObject(sql,new Object[]{userId},Integer.class);
-        if(coin!=null){
+        Integer coin = jdbcTemplate.queryForObject(sql, new Object[]{userId}, Integer.class);
+        if (coin != null) {
             return coin;
         } else {
             return 0;
@@ -271,7 +273,7 @@ public class UserDao extends Dao {
     public static void reduceCoin(int sendCoin, int userId) {
 
         String sql = "UPDATE user SET coin = coin - ? WHERE id = ?";
-        jdbcTemplate.update(sql,sendCoin,userId);
+        jdbcTemplate.update(sql, sendCoin, userId);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
 //
@@ -294,7 +296,7 @@ public class UserDao extends Dao {
 
     public static void addCollection(int userId, int videoId) {
         String sql = "INSERT INTO collection(user_id,video_id) VALUES(?,?)";
-        jdbcTemplate.update(sql,userId,videoId);
+        jdbcTemplate.update(sql, userId, videoId);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
 //        try {
@@ -311,8 +313,23 @@ public class UserDao extends Dao {
 //        }
     }
 
+    public static void cancelCollection(int userId, int videoId) {
+        String sql = "DELETE FROM collection WHERE user_id = ? AND video_id = ?";
+        jdbcTemplate.update(sql, userId, videoId);
+    }
+
     public static Map<String, Object> getAuthor(int videoId) {
-        String sql = "SELECT id,nickname,description,level,photo_url from user where id = (SELECT author_id FROM video where id = ?)";
-        return jdbcTemplate.queryForMap(sql,videoId);
+        String sql = "SELECT id,nickname,description,level,photo_url FROM user WHERE id = (SELECT author_id FROM video WHERE id = ?)";
+        return jdbcTemplate.queryForMap(sql, videoId);
+    }
+
+    public static void updatePhoto(String nickname, String url) {
+        String sql = "UPDATE user SET PHOTO_URL = ? WHERE nickname = ?";
+        jdbcTemplate.update(sql,url,nickname);
+    }
+
+    public static void updatePassword(String nickname, String newPassword) {
+        String sql = "UPDATE user SET password = ? WHERE nickname = ?";
+        jdbcTemplate.update(sql,SecretUtil.encoderHs256(newPassword),nickname);
     }
 }

@@ -10,7 +10,7 @@ public class LoginUtil {
 
     public static boolean isPass(String usernameType, String username, String password) {
 
-        if (UserDao.getUserid(usernameType, username) != -1) {
+        if (UserDao.getUserid(usernameType, username) != -1) { ;
             String passwordSecret = UserDao.getUserPass(username, usernameType);
             password = SecretUtil.encoderHs256(password);
             if (password.equals(passwordSecret)) {
@@ -19,6 +19,7 @@ public class LoginUtil {
             }
         }
         return false;
+
     }
 
     public static boolean isNumeric(String s) {

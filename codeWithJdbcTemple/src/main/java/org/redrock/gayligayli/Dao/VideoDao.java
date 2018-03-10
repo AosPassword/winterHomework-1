@@ -240,7 +240,7 @@ public class VideoDao extends Dao {
             for (Map<String, Object> aList : list) {
                 partitionSet.add(new Video(aList));
             }
-            while (partitionSet.size() < 13) {
+            while (partitionSet.size() < 7) {
                 partitionSet.add(getAllTypeRandomVideo());
             }
         return partitionSet;
@@ -248,9 +248,9 @@ public class VideoDao extends Dao {
 
     public static Video getVideoInfo(int id) {
         String sql = "SELECT video.* FROM video WHERE id = ? AND success = 'y'";
-        Map<String, Object> map = jdbcTemplate.queryForMap(sql,id);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql,id);
 
-        return new Video(map);
+        return new Video(list.get(0));
     }
 
     public static ArrayList<Barrage> getBarrageList(int id) {
@@ -458,8 +458,8 @@ public class VideoDao extends Dao {
         } else {
             num = getCommentNum(ID, pid);
         }
-        String sql = "INSERT comment(video_id,pid,author_id,content,time,device,num) VALUE(?,?,?,?,?,?,?)";
-        jdbcTemplate.update(sql, videoId, pid, authorId, content, time, device, num);
+        String sql = "INSERT comment(video_id,pid,author_id,content,time,device,num,praise) VALUE(?,?,?,?,?,?,?,?)";
+        jdbcTemplate.update(sql, videoId, pid, authorId, content, time, device, num,0);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
 //        try {
@@ -515,5 +515,47 @@ public class VideoDao extends Dao {
             videoList.add(video);
         }
         return videoList;
+    }
+
+    public static List<Video> getVideoList(String id) {
+        String sql = "SELECT * FROM video WHERE author_id = ?";
+        List<Map<String,Object>> list = jdbcTemplate.queryForList(sql,id);
+        List<Video> videoList = new ArrayList<>();
+        for (Map<String, Object> map :list) {
+            Video video = new Video(map);
+            videoList.add(video);
+        }
+        return videoList;
+    }
+
+    public static List<Video> getCollectionList(String id) {
+        String sql = "SELECT video_id FROM collection WHERE author_id = ?";
+        List<Video> videoList = new ArrayList<>();
+        List<String> list = jdbcTemplate.queryForList(sql,new Object[]{id},String.class);
+        String selectSql = "SELECT * FROM video WHERE id = ?";
+        for (String str : list) {
+            Map<String,Object> map = jdbcTemplate.queryForMap(selectSql,str);
+            videoList.add(new Video(map));
+        }
+        return videoList;
+    }
+
+    public static int countRow() {
+        String sql = "SELECT COUNT(1) FROM video where success = 'y'";
+        Integer line = jdbcTemplate.queryForObject(sql,Integer.class);
+        if(line!=null){
+            return line;
+        } else{
+            return -1;
+        }
+    }
+
+    public static int getLine(String lineSql, String data) {
+        Integer line = jdbcTemplate.queryForObject(lineSql,new Object[]{data},Integer.class);
+        if (line!=null){
+            return line;
+        }else {
+            return -1;
+        }
     }
 }

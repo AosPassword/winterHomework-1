@@ -16,21 +16,18 @@ import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
 @WebServlet(name = "videoPage", urlPatterns = "/videoPage")
 public class VideoPageServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-
-        String jsonStr = JsonUtil.getJsonStr(request.getInputStream());
-
-        Receiver receiver = new Receiver(jsonStr);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
         Command command = new VideoPageCommand(receiver);
-        command.exectue();
-
+        if (receiver.isSignatureTrue()) {
+            command.exectue();
+        } else {
+            receiver.errorString();
+        }
         JsonUtil.writeResponse(response, command.getResponseJson());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
+        doPost(request,response);
     }
 }

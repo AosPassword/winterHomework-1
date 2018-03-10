@@ -21,7 +21,7 @@ public class VideoInfoUtil {
                     "广告", "娱乐", "影视", "放映厅"};
 
     public static boolean isVideoExist(int id) {
-        return VideoDao.getVideoInfo(id) != null;
+        return VideoDao.getVideoId(ID,String.valueOf(id)) != -1;
     }
 
     public static boolean isVideoExist(String avId) {

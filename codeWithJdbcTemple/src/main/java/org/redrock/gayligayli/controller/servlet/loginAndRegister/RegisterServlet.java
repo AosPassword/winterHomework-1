@@ -29,12 +29,8 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-        String jsonStr = JsonUtil.getJsonStr(request.getInputStream());
 
-        Receiver receiver = new Receiver(jsonStr);
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
         Command command = new RegisterCommand(receiver);
         command.exectue();
 

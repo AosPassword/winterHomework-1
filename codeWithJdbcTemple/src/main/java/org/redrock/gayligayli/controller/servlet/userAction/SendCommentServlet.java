@@ -15,16 +15,13 @@ import java.io.IOException;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
-@WebServlet(name = "SendCommentServlet",urlPatterns = "/sendComment")
+@WebServlet(name = "SendCommentServlet", urlPatterns = "/sendComment")
 public class SendCommentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-        String requestJson = JsonUtil.getJsonStr(request.getInputStream());
-        String tokenStr = request.getHeader(JWT);
 
-        Receiver receiver = new Receiver(requestJson, new Token(tokenStr));
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
+        Token token = (Token) request.getAttribute(JWT);
+        receiver.setToken(token);
         Command command = new SendCommentCommand(receiver);
         command.exectue();
 

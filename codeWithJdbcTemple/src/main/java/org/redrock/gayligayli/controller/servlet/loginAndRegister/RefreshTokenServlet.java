@@ -28,14 +28,11 @@ public class RefreshTokenServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-        String tokenStr = request.getHeader(JWT);
-        String jsonStr = JsonUtil.getJsonStr(request.getInputStream());
 
-        Receiver receiver = new Receiver(jsonStr);
-        Command command = new RefreshTokenCommand(receiver, tokenStr);
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
+        Token token = (Token) request.getAttribute(JWT);
+        receiver.setToken(token);
+        Command command = new RefreshTokenCommand(receiver);
         command.exectue();
 
         JsonUtil.writeResponse(response, command.getResponseJson());

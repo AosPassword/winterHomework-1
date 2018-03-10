@@ -1,5 +1,8 @@
 package org.redrock.gayligayli.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class FinalStringUtil {
     public static final String CONTENT = "content";
     public static final String TIME = "time";
@@ -61,6 +64,18 @@ public class FinalStringUtil {
     public static final String DEVICE = "device";
     public static final String PRAISE = "praise";
 
+    public static final String OLD_PASSWORD="oldPassword";
+    public static final String NEW_PASSWORD="newPassword";
+
+    public static final String USER_INFO = "userInfo";
+
+    public static final String RECEIVE = "receive";
+
+    public static final String[] partition =
+            {CARTOON, ANIME, CREATED_BY_NATIVE, MUSIC, DANCE,
+                    GAME, SCIENCE, LIFE, AUTOTUNE_REMIX, FASHION,
+                    ADVERTISEMENT, ENTERTAINMENT, MOVIES, SCREENING_HALL};
+
     public static final String USERNAME_TYPE = "usernameType";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
@@ -68,8 +83,8 @@ public class FinalStringUtil {
     public static final String SIGNATURE = "signature";
 
     public final static int TOKEN_OVERTIME_SECOND = 2592000;
-    //TODO:测试的过期时间增加了一倍
-    public final static int REQUEST_OVERTIME_SECOND = 60;
+    //TODO:测试的Token和request过期时间增加了一倍
+    public final static int REQUEST_OVERTIME_SECOND = 600;
 
     public static final String AUTHOR = "author";
     public static final String RESULT = "result";
@@ -146,5 +161,10 @@ public class FinalStringUtil {
     public static final String PARAMETER_ERROR="parameterError";
 
     public static final String IDK="idk";
+
+    public static final String ACTION="action";
+
+    public static final String ADD="add";
+    public static final String CANCEL="cancel";
 
 }

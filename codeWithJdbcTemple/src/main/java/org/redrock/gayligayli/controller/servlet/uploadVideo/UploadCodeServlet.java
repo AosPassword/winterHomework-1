@@ -21,14 +21,9 @@ public class UploadCodeServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        request.setCharacterEncoding(UTF8);
-        response.setCharacterEncoding(UTF8);
-        response.setHeader(HEADER_ONE,HEADER_TWO);
-        String requestStr = JsonUtil.getJsonStr(request.getInputStream());
-        String tokenStr = request.getHeader(JWT);
-        System.out.println(tokenStr);
-
-        Receiver receiver = new Receiver(requestStr,new Token(tokenStr));
+        Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
+        Token token = (Token) request.getAttribute(JWT);
+        receiver.setToken(token);
         Command command = new uploadCodeCommand(receiver);
         command.exectue();
 

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.UTF8;
@@ -17,11 +18,12 @@ public class SecretUtil {
     public static boolean isSecret(String data, String signature) {
         String base = null;
         try {
+            System.out.println("data " +data);
             base = new String(Base64.getEncoder().encode(data.getBytes("UTF-8")),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println(base);
+        System.out.println("si "+base);
         return encoderHs256(base).equals(signature);
     }
 
@@ -31,7 +33,7 @@ public class SecretUtil {
             Mac sha256Hmac = Mac.getInstance(INSTANCE);
             SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), INSTANCE);
             sha256Hmac.init(secretKey);
-            byte[] bytes = sha256Hmac.doFinal(message.getBytes());
+            byte[] bytes = sha256Hmac.doFinal(message.getBytes(UTF8));
             StringBuilder hs = new StringBuilder();
             String stmp;
             for (int n = 0; bytes!=null && n < bytes.length; n++) {
@@ -47,4 +49,9 @@ public class SecretUtil {
         return hash;
     }
 
+    public static void main(String[] args) {
+        String str = "测试aaa";
+        String a = Base64.getEncoder().encodeToString(str.getBytes());
+        System.out.println(new String(Base64.getDecoder().decode(a)));
+    }
 }

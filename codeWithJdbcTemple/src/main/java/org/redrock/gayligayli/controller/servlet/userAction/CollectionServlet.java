@@ -3,7 +3,7 @@ package org.redrock.gayligayli.controller.servlet.userAction;
 import org.redrock.gayligayli.service.Command;
 import org.redrock.gayligayli.service.Receiver;
 import org.redrock.gayligayli.service.loginAndRegister.been.Token;
-import org.redrock.gayligayli.service.userAction.command.SendBarrageCommand;
+import org.redrock.gayligayli.service.userAction.command.CollectionCommand;
 import org.redrock.gayligayli.util.JsonUtil;
 
 import javax.servlet.ServletException;
@@ -15,20 +15,20 @@ import java.io.IOException;
 
 import static org.redrock.gayligayli.util.FinalStringUtil.*;
 
-@WebServlet(name = "SendBarrageServlet", urlPatterns = "/sendBarrage")
-public class SendBarrageServlet extends HttpServlet {
+@WebServlet(name = "collectionServlet", urlPatterns = "/collection")
+public class CollectionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Receiver receiver = (Receiver) request.getAttribute(RECEIVE);
         Token token = (Token) request.getAttribute(JWT);
         receiver.setToken(token);
-        Command command = new SendBarrageCommand(receiver);
+        Command command = new CollectionCommand(receiver);
         command.exectue();
 
         JsonUtil.writeResponse(response, command.getResponseJson());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        doPost(request, response);
     }
 }
